@@ -2,10 +2,11 @@
 
 #include <imgui.h>
 
-#include <fenestra/helpers/logger.hpp>
-
 #include <fenestra/api/plugin_manager.hpp>
 #include <fenestra/api/task_manager.hpp>
+
+#include <fenestra/helpers/logger.hpp>
+#include <fenestra/helpers/utils.hpp>
 
 #include <set>
 
