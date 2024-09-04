@@ -18,7 +18,7 @@ cd YourFenestraProject
 mkdir build
 cd build
 cmake ..
-cmake --build fenestra_all
+cmake --build . --target fenestra_all
 ```
 
 To launch the application, run the executable with the same name as your project in the build directory.
