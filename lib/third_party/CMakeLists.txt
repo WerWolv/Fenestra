@@ -1,0 +1,15 @@
+project(third_party)
+
+set(MESSAGES_SUPPRESSED ON)
+add_subdirectory(imgui)
+add_subdirectory(fmt)
+add_subdirectory(jthread)
+add_subdirectory(nlohmann_json)
+add_subdirectory(lunasvg)
+set(BUILD_SHARED_LIBS OFF)
+add_subdirectory(SDL)
+set(XDGPP_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/xdgpp" PARENT_SCOPE)
+set(MESSAGES_SUPPRESSED OFF)
+
+target_compile_definitions(lunasvg PUBLIC LUNASVG_BUILD_STATIC)
+target_compile_options(SDL3-static PRIVATE "-Wno-deprecated-declarations")

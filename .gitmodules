@@ -1,0 +1,21 @@
+[submodule "lib/external/libromfs"]
+	path = lib/external/libromfs
+	url = https://github.com/WerWolv/libromfs
+[submodule "lib/third_party/fmt"]
+	path = lib/third_party/fmt
+	url = https://github.com/fmtlib/fmt
+[submodule "lib/external/libwolv"]
+	path = lib/external/libwolv
+	url = https://github.com/WerWolv/libwolv
+[submodule "lib/third_party/jthread/jthread"]
+	path = lib/third_party/jthread/jthread
+	url = https://github.com/josuttis/jthread
+[submodule "lib/third_party/lunasvg"]
+	path = lib/third_party/lunasvg
+	url = https://github.com/sammycage/lunasvg
+[submodule "lib/third_party/SDL"]
+	path = lib/third_party/SDL
+	url = https://github.com/libsdl-org/SDL
+[submodule "lib/third_party/xdgpp"]
+	path = lib/third_party/xdgpp
+	url = https://github.com/WerWolv/xdgpp
