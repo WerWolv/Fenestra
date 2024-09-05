@@ -62,7 +62,7 @@ void setupConsoleWindow() {
 int launchExecutable() {
     // Get the path of the main executable
     auto executablePath = wolv::io::fs::getExecutablePath();
-    auto executableFullPath = executablePath->replace_extension("-gui.exe");
+    auto executableFullPath = executablePath->replace_extension("").concat("-gui.exe");
 
     ::PROCESS_INFORMATION process = { };
     ::STARTUPINFOW startupInfo = { .cb = sizeof(::STARTUPINFOW) };
