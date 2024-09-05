@@ -58,7 +58,7 @@
                         }
                     });
 
-                    // Delete splash window (do it before creating the main window so glfw destroys the window)
+                    // Delete splash window (do it before creating the main window so the backend destroys the window)
                     splashWindow.reset();
 
                     emscripten_cancel_main_loop();

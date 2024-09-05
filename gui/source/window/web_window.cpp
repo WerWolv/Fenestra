@@ -1,11 +1,11 @@
-#include "window.hpp"
-
 #if defined(OS_WEB)
+#include "window.hpp"
 
 #include <emscripten.h>
 #include <emscripten/html5.h>
 
-#include <hex/api/event_manager.hpp>
+#include <fenestra/api/event_manager.hpp>
+#include <fenestra/events/system_events.hpp>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -41,7 +41,7 @@ EM_JS(bool, isDarkModeEnabled, (), {
 
 EMSCRIPTEN_KEEPALIVE
 extern "C" void handleThemeChange() {
-    hex::EventOSThemeChanged::post();
+    fene::EventOSThemeChanged::post();
 }
 
 
@@ -75,10 +75,10 @@ namespace fene {
     }
 
     void Window::configureBackend() {
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-        glfwWindowHint(GLFW_DECORATED, GL_FALSE);
-        glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_FALSE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
     }
 
     void Window::initNative() {
@@ -109,19 +109,6 @@ namespace fene {
             if (!themeFollowSystem) return;
 
             RequestChangeTheme::post(!isDarkModeEnabled() ? "Light" : "Dark");
-        });
-
-        // Register file drop callback
-        glfwSetDropCallback(m_window, [](GLFWwindow *, int count, const char **paths) {
-            for (int i = 0; i < count; i++) {
-                EventFileDropped::post(reinterpret_cast<const char8_t *>(paths[i]));
-            }
-        });
-
-        glfwSetWindowRefreshCallback(m_window, [](GLFWwindow *window) {
-            auto win = static_cast<Window *>(glfwGetWindowUserPointer(window));
-            resizeCanvas();
-            win->fullFrame();
         });
 
         if (themeFollowSystem)

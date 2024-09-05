@@ -33,7 +33,7 @@ target_include_directories(main PUBLIC include)
 add_dependencies(fenestra_all main)
 
 if (EMSCRIPTEN)
-    target_link_options(main PRIVATE -sUSE_GLFW=3 -sUSE_PTHREADS=1 -sALLOW_MEMORY_GROWTH=1)
+    target_link_options(main PRIVATE -sUSE_PTHREADS=1 -sALLOW_MEMORY_GROWTH=1)
     target_link_options(main PRIVATE -sTOTAL_MEMORY=134217728)
     target_link_options(main PRIVATE -sMAX_WEBGL_VERSION=2)
     target_link_options(main PRIVATE -sEXPORTED_RUNTIME_METHODS=ccall)

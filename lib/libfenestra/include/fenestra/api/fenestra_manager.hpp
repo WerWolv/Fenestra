@@ -189,8 +189,8 @@ namespace fene {
             ImGuiID getMainDockSpaceId();
 
             /**
-             * @brief Gets the main window's GLFW window handle
-             * @return GLFW window handle
+             * @brief Gets the main window's backend window handle
+             * @return Backend window handle
              */
             void* getMainWindowHandle();
 

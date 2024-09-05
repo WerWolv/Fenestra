@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-# https://github.com/ocornut/imgui with custom modifications made to the OpenGL 3 and GLFW backends
+# https://github.com/ocornut/imgui with custom modifications made to the OpenGL 3 and SDL3 backends
 project(imgui_custom)
 
 set(CMAKE_CXX_STANDARD 17)

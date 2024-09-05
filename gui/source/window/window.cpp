@@ -69,7 +69,7 @@ namespace fene {
         }
 
         // Initialize the window
-        this->initGLFW();
+        this->initBackend();
         this->initImGui();
         this->setupNativeWindow();
         this->registerEventHandlers();
@@ -89,14 +89,14 @@ namespace fene {
         EventWindowDeinitializing::post(m_window);
 
         this->exitImGui();
-        this->exitGLFW();
+        this->exitBackend();
     }
 
     void Window::registerEventHandlers() {
         // Initialize default theme
         RequestChangeTheme::post("Dark");
 
-        // Handle the close window request by telling GLFW to shut down
+        // Handle the close window request by telling the backend to shut down
         RequestCloseApplication::subscribe(this, [this](bool noQuestions) {
             m_windowOpen = false;
 
@@ -740,7 +740,7 @@ namespace fene {
         WorkspaceManager::process();
     }
 
-    void Window::initGLFW() {
+    void Window::initBackend() {
         auto initialWindowProperties = FenestraApi::System::getInitialWindowProperties();
 
         if (!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_TIMER)) {
@@ -912,7 +912,6 @@ namespace fene {
             ImGui_ImplOpenGL3_Init("#version 150");
         #elif defined(OS_WEB)
             ImGui_ImplOpenGL3_Init();
-            ImGui_ImplGlfw_InstallEmscriptenCanvasResizeCallback("#canvas");
         #else
             ImGui_ImplOpenGL3_Init("#version 130");
         #endif
@@ -923,7 +922,7 @@ namespace fene {
         RequestInitThemeHandlers::post();
     }
 
-    void Window::exitGLFW() {
+    void Window::exitBackend() {
         SDL_DestroyWindow(m_window);
         SDL_Quit();
 

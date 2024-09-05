@@ -12,9 +12,7 @@
 
 #include <fenestra/ui/view.hpp>
 
-struct GLFWwindow;
 struct ImGuiSettingsHandler;
-
 
 namespace fene {
 
@@ -43,9 +41,9 @@ namespace fene {
         void frame();
         void frameEnd();
 
-        void initGLFW();
+        void initBackend();
         void initImGui();
-        void exitGLFW();
+        void exitBackend();
         void exitImGui();
 
         void registerEventHandlers();

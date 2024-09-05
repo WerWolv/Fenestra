@@ -26,13 +26,6 @@ using namespace std::literals::chrono_literals;
 
 namespace fene::init {
 
-    struct GlfwError {
-        int errorCode = 0;
-        std::string desc;
-    };
-
-    GlfwError lastGlfwError;
-
     WindowSplash::WindowSplash() : m_window(nullptr), m_glContext(nullptr) {
         this->initBackend();
         this->initImGui();
@@ -240,19 +233,18 @@ namespace fene::init {
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     #endif
 
-	#if defined(OS_LINUX) && defined(GLFW_WAYLAND_APP_ID)
-	    glfwWindowHintString(GLFW_WAYLAND_APP_ID, FENESTRA_APPLICATION_NAME_LOWER);
-	#endif
+        SDL_SetHint(SDL_HINT_APP_ID, FENESTRA_APPLICATION_NAME_LOWER);
 
         // Create the splash screen window
         m_window = SDL_CreateWindow("Starting Application...", 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_TRANSPARENT | SDL_WINDOW_ALWAYS_ON_TOP);
         if (m_window == nullptr) {
             fene::nativeErrorMessage(fmt::format(
-                "Failed to create GLFW window: [{}] {}.\n"
+                "Failed to create GLFW window: {}.\n"
                 "You may not have a renderer available.\n"
                 "The most common cause of this is using a virtual machine\n"
-                "You may want to try a release artifact ending with 'NoGPU'"
-                , lastGlfwError.errorCode, lastGlfwError.desc));
+                "You may want to try a release artifact ending with 'NoGPU'",
+                SDL_GetError()
+            ));
             std::exit(EXIT_FAILURE);
         }
 
@@ -296,7 +288,6 @@ namespace fene::init {
             ImGui_ImplOpenGL3_Init("#version 150");
         #elif defined(OS_WEB)
             ImGui_ImplOpenGL3_Init();
-            ImGui_ImplGlfw_InstallEmscriptenCanvasResizeCallback("#canvas");
         #else
             ImGui_ImplOpenGL3_Init("#version 130");
         #endif
