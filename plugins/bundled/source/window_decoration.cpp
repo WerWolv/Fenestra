@@ -173,7 +173,7 @@ namespace fene::plugin::bundled {
             // Custom title bar buttons implementation for borderless window mode
             auto window = static_cast<SDL_Window*>(FenestraApi::System::getMainWindowHandle());
             bool titleBarButtonsVisible = false;
-            if (FenestraApi::System::isBorderlessWindowModeEnabled() && SDL_GetDisplayForWindow(window) == 0) {
+            if (FenestraApi::System::isBorderlessWindowModeEnabled()) {
                 #if defined(OS_WINDOWS)
                     titleBarButtonsVisible = true;
 
