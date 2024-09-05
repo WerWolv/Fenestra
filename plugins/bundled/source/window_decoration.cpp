@@ -61,7 +61,7 @@ namespace fene::plugin::bundled {
             auto dockId = ImGui::DockSpace(ImGui::GetID("FenestraMainDock"), dockSpaceSize);
             FenestraApi::System::impl::setMainDockSpaceId(dockId);
 
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y - 1_scaled);
             ImGui::Separator();
             ImGui::SetCursorPosX(8);
             for (const auto &callback : InterfaceRegistry::impl::getFooterItems()) {

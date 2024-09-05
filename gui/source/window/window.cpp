@@ -878,6 +878,7 @@ namespace fene {
         style.Colors[ImGuiCol_TitleBg]             = style.Colors[ImGuiCol_MenuBarBg];
         style.Colors[ImGuiCol_TitleBgActive]       = style.Colors[ImGuiCol_MenuBarBg];
         style.Colors[ImGuiCol_TitleBgCollapsed]    = style.Colors[ImGuiCol_MenuBarBg];
+        style.Colors[ImGuiCol_WindowBg].w = 1.0F;
 
         // Install custom settings handler
         {
