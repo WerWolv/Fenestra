@@ -1,0 +1,13 @@
+#include <hex/helpers/logger.hpp>
+
+extern "C" void forceLinkPlugin_@IMHEX_PLUGIN_NAME@();
+
+namespace {
+struct StaticLoad {
+    StaticLoad() {
+        forceLinkPlugin_@IMHEX_PLUGIN_NAME@();
+    }
+};
+}
+
+static StaticLoad staticLoad;
