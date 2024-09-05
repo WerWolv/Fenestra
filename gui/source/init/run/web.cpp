@@ -7,11 +7,13 @@
     #include <fenestra/api/event_manager.hpp>
     #include <fenestra/api/task_manager.hpp>
 
+    #include <fenestra/events/system_events.hpp>
+
     #include <window.hpp>
 
     #include <init/run.hpp>
 
-    namespace hex::init {
+    namespace fene::init {
 
         void saveFsData() {
             EM_ASM({
@@ -39,11 +41,11 @@
 
                 FrameResult frameResult = splashWindow->fullFrame();
                 if (frameResult == FrameResult::Success) {
-                    handleFileOpenRequest();
-
                     // Clean up everything after the main window is closed
                     emscripten_set_beforeunload_callback(nullptr, [](int eventType, const void *reserved, void *userData) {
-                        hex::unused(eventType, reserved, userData);
+                        std::ignore = eventType;
+                        std::ignore = reserved;
+                        std::ignore = userData;
 
                         emscripten_cancel_main_loop();
 
@@ -53,7 +55,7 @@
                             return "";
                         } catch (const std::exception &e) {
                             static std::string message;
-                            message = hex::format("Failed to deinitialize Application!\nThis is just a message warning you of this, the application has already closed, you probably can't do anything about it.\n\nError: {}", e.what());
+                            message = fmt::format("Failed to deinitialize Application!\nThis is just a message warning you of this, the application has already closed, you probably can't do anything about it.\n\nError: {}", e.what());
                             return message.c_str();
                         }
                     });

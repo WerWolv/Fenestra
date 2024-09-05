@@ -30,8 +30,6 @@ add_custom_target(fenestra_all)
 configureCMake()
 addDefines()
 detectOS()
-detectBundledPlugins()
-addPluginDirectories()
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
@@ -40,3 +38,6 @@ add_subdirectory(gui)
 if (WIN32)
     add_subdirectory(forwarder)
 endif ()
+
+detectBundledPlugins()
+addPluginDirectories()

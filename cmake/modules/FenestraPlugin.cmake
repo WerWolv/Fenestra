@@ -15,7 +15,7 @@ macro(add_fenestra_plugin)
 
         target_link_libraries(libfenestra PUBLIC ${FENESTRA_PLUGIN_NAME})
 
-        configure_file(${CMAKE_SOURCE_DIR}/dist/web/plugin-bundle.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/plugin-bundle.cpp @ONLY)
+        configure_file(${CMAKE_SOURCE_DIR}/dist/web/plugin_bundle.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/plugin-bundle.cpp @ONLY)
         target_sources(main PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/plugin-bundle.cpp)
         set(FENESTRA_PLUGIN_SUFFIX ".hexplug")
     else()

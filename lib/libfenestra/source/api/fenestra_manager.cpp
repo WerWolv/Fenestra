@@ -12,7 +12,7 @@
 
 #if defined(OS_WINDOWS)
     #include <Windows.h>
-#elif defined(OS_LINUX) || defined(OS_MACOS)
+#elif defined(OS_LINUX) || defined(OS_MACOS) || defined(OS_WEB)
     #include <sys/utsname.h>
 #endif
 

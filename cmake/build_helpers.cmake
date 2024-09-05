@@ -1,5 +1,13 @@
 include(FetchContent)
 
+function(message)
+    if (MESSAGES_SUPPRESSED AND "${ARGV0}" STREQUAL "STATUS")
+        return()
+    endif()
+
+    _message(${ARGV})
+endfunction()
+
 string(TOLOWER ${FENESTRA_APPLICATION_NAME} FENESTRA_APPLICATION_NAME_LOWER)
 
 if (PROJECT_IS_TOP_LEVEL)
@@ -269,10 +277,11 @@ macro(detectBundledPlugins)
         if (NOT EXISTS "${FENESTRA_APPLICATION_PLUGIN_DIRECTORY}")
             message(FATAL_ERROR "Application plugins directory '${FENESTRA_APPLICATION_PLUGIN_DIRECTORY}' not found! Please set it to an existing directory path")
         endif()
+
+        file(GLOB APPLICATION_PLUGIN_DIRS "${FENESTRA_APPLICATION_PLUGIN_DIRECTORY}/*")
     endif()
 
     file(GLOB BUILTIN_PLUGINS_DIRS "${FENESTRA_PLUGIN_FOLDER}/*")
-    file(GLOB APPLICATION_PLUGIN_DIRS "${FENESTRA_APPLICATION_PLUGIN_DIRECTORY}/*")
 
     set(PLUGINS_DIRS "${BUILTIN_PLUGINS_DIRS};${APPLICATION_PLUGIN_DIRS}")
 
@@ -539,12 +548,4 @@ function(precompileHeaders target includeFolder)
             PUBLIC
             "$<$<COMPILE_LANGUAGE:CXX>:${INCLUDES}>"
     )
-endfunction()
-
-function(message)
-    if (MESSAGES_SUPPRESSED AND "${ARGV0}" STREQUAL "STATUS")
-        return()
-    endif()
-
-    _message(${ARGV})
 endfunction()

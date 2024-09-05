@@ -11,7 +11,7 @@
 #include <imgui.h>
 #include <fenestra/ui/imgui_extensions.h>
 
-namespace hex::ui {
+namespace fene::ui {
 
     template<typename T>
     class SearchableWidget {

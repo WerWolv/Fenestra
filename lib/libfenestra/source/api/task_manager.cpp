@@ -472,7 +472,7 @@ namespace fene {
         #elif defined(OS_LINUX)
                 pthread_setname_np(pthread_self(), name.c_str());
         #elif defined(OS_WEB)
-                hex::unused(name);
+                std::ignore = name;
         #elif defined(OS_MACOS)
                 pthread_setname_np(name.c_str());
         #endif

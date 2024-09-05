@@ -14,7 +14,6 @@ set -xe
 
 git clone https://github.com/microsoft/vcpkg /vcpkg
 /vcpkg/bootstrap-vcpkg.sh
-sed -i 's/vcpkg_install_make(${EXTRA_ARGS})/vcpkg_install_make(${EXTRA_ARGS} SUBPATH src)/g' /vcpkg/ports/libmagic/portfile.cmake
 EOF
 
 # Patch vcpkg build instructions to add -pthread

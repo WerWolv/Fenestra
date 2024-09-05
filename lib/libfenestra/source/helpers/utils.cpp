@@ -455,7 +455,7 @@ namespace fene {
 
             return dlopen(info.dli_fname, RTLD_LAZY);
         #else
-            hex::unused(symbol);
+            std::ignore = symbol;
             return nullptr;
         #endif
     }

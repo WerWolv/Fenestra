@@ -2,7 +2,6 @@
 
 #include <stdexcept>
 
-#include <fenestra/helpers/intrinsics.hpp>
 #include <fenestra/helpers/logger.hpp>
 
 #include "messaging.hpp"
@@ -10,8 +9,8 @@
 namespace fene::messaging {
 
     void sendToOtherInstance(const std::string &eventName, const std::vector<u8> &args) {
-        hex::unused(eventName);
-        hex::unused(args);
+        std::ignore = eventName;
+        std::ignore = args;
         log::error("Unimplemented function 'sendToOtherInstance()' called");
     }
     

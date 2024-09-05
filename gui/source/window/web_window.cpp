@@ -41,7 +41,7 @@ EM_JS(bool, isDarkModeEnabled, (), {
 
 EMSCRIPTEN_KEEPALIVE
 extern "C" void handleThemeChange() {
-    fene::EventOSThemeChanged::post();
+    EventOSThemeChanged::post();
 }
 
 

@@ -30,7 +30,8 @@
 #include <imgui_internal.h>
 #include <imgui_impl_sdl3.h>
 #include <imgui_impl_opengl3.h>
-#include <imgui_impl_opengl3_loader.h>
+#include <opengl_support.h>
+
 #include <fenestra/ui/imgui_extensions.h>
 #include <implot.h>
 #include <implot_internal.h>
