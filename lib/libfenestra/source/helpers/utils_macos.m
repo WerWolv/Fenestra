@@ -127,6 +127,71 @@
         [cocoaWindow setDocumentEdited:edited];
     }
 
+    typedef void (*MenuAction)(void *);
+
+    @interface MenuActionHandler : NSObject
+        @property (nonatomic, assign) MenuAction action;
+        @property (nonatomic, assign) void *userdata;
+        - (instancetype)initWithAction:(MenuAction)action andUserdata:(void *)userdata;
+        - (void)triggerAction:(id)sender;
+    @end
+
+    @implementation MenuActionHandler
+
+    - (instancetype)initWithAction:(MenuAction)action andUserdata:(void *)userdata {
+        self = [super init];
+        if (self) {
+            _action = action;
+            _userdata = userdata;
+        }
+        return self;
+    }
+
+    - (void)triggerAction:(id)sender {
+        if (self.action) {
+            self.action(self.userdata);
+        }
+    }
+
+    @end
+
+    void macosAddMainMenuEntry(const char **path, unsigned long pathSize, MenuAction action, void *userdata) {
+        if (pathSize < 2) {
+            return;
+        }
+
+        NSMenu *menu = [NSApp mainMenu];
+
+        for (unsigned long i = 0; i < pathSize - 1; i++) {
+            NSString *menuTitle = [NSString stringWithUTF8String:path[i]];
+
+            NSMenuItem *existingItem = [menu itemWithTitle:menuTitle];
+            if (existingItem != nil && [existingItem hasSubmenu]) {
+                menu = [existingItem submenu];
+            } else {
+                NSMenu *subMenu = [[NSMenu alloc] initWithTitle:menuTitle];
+                NSMenuItem *menuEntry = [[NSMenuItem alloc] initWithTitle:menuTitle action:nil keyEquivalent:@""];
+                [menuEntry setSubmenu:subMenu];
+
+                int index = [menu numberOfItems] - 1;
+                if (index < 0) index = 0;
+
+                [menu insertItem:menuEntry atIndex: index];
+                menu = subMenu;
+            }
+        }
+
+        NSString *menuItemTitle = [NSString stringWithUTF8String:path[pathSize - 1]];
+        NSMenuItem *actionItem = [[NSMenuItem alloc] initWithTitle:menuItemTitle action:nil keyEquivalent:@""];
+
+        MenuActionHandler *handler = [[MenuActionHandler alloc] initWithAction:action andUserdata:userdata];
+
+        [actionItem setTarget:handler];
+        [actionItem setAction:@selector(triggerAction:)];
+
+        [menu addItem:actionItem];
+    }
+
     @interface HexDocument : NSDocument
 
     @end
@@ -138,8 +203,9 @@
         const char* utf8String = [urlString UTF8String];
 
         const char *prefix = "file://";
-        if (strncmp(utf8String, prefix, strlen(prefix)) == 0)
-            utf8String += strlen(prefix);
+        size_t prefixLength = strlen(prefix);
+        if (strncmp(utf8String, prefix, prefixLength) == 0)
+            utf8String += prefixLength;
 
         openFile(utf8String);
 
