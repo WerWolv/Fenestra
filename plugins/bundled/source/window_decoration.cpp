@@ -171,7 +171,7 @@ namespace fene::plugin::bundled {
             s_searchBarPosition = searchBoxPos.x;
 
             // Custom title bar buttons implementation for borderless window mode
-            auto window = static_cast<SDL_Window*>(FenestraApi::System::getMainWindowHandle());
+            [[maybe_unused]] auto window = static_cast<SDL_Window*>(FenestraApi::System::getMainWindowHandle());
             bool titleBarButtonsVisible = false;
             if (FenestraApi::System::isBorderlessWindowModeEnabled()) {
                 #if defined(OS_WINDOWS)
