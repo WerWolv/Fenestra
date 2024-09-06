@@ -23,7 +23,7 @@
                     auto splashWindow = initializeApplication();
                     // Draw the splash window while tasks are running
                     if (!splashWindow->loop())
-                        FenestraApi::System::impl::addInitArgument("tasks-failed");
+                        FenestraManager::System::impl::addInitArgument("tasks-failed");
                 }
 
                 // Clean up everything after the main window is closed

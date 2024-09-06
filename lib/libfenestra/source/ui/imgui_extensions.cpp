@@ -499,8 +499,8 @@ namespace ImGuiExt {
         RenderTextClipped(bb.Min + style.FramePadding * 2 + ImVec2(style.FramePadding.x * 2, label_size.y), bb.Max - style.FramePadding, description, nullptr, &text_size, style.ButtonTextAlign, &clipBb);
         PopStyleColor();
 
-        RenderFrame(ImVec2(bb.Min.x, bb.Max.y - 5 * FenestraApi::System::getGlobalScale()), bb.Max, GetColorU32(ImGuiCol_ScrollbarBg), false, style.FrameRounding);
-        RenderFrame(ImVec2(bb.Min.x, bb.Max.y - 5 * FenestraApi::System::getGlobalScale()), ImVec2(bb.Min.x + fraction * bb.GetSize().x, bb.Max.y), GetColorU32(ImGuiCol_Button), false, style.FrameRounding);
+        RenderFrame(ImVec2(bb.Min.x, bb.Max.y - 5 * FenestraManager::System::getGlobalScale()), bb.Max, GetColorU32(ImGuiCol_ScrollbarBg), false, style.FrameRounding);
+        RenderFrame(ImVec2(bb.Min.x, bb.Max.y - 5 * FenestraManager::System::getGlobalScale()), ImVec2(bb.Min.x + fraction * bb.GetSize().x, bb.Max.y), GetColorU32(ImGuiCol_Button), false, style.FrameRounding);
         RenderFrame(bb.Min, bb.Max, 0x00, true, style.FrameRounding);
 
         PopStyleVar(2);
@@ -578,7 +578,7 @@ namespace ImGuiExt {
             if (!std::string_view(text).empty()) {
                 const auto textWidth = CalcTextSize(text).x;
 
-                const auto maxWidth = 300 * FenestraApi::System::getGlobalScale();
+                const auto maxWidth = 300 * FenestraManager::System::getGlobalScale();
                 const bool wrapping = textWidth > maxWidth;
 
                 if (wrapping)
@@ -911,7 +911,7 @@ namespace ImGuiExt {
         const ImGuiStyle &style = g.Style;
 
         ImVec2 pos  = window->DC.CursorPos + ImVec2(0, yOffset);
-        ImVec2 size = CalcItemSize(ImVec2(100, 5) * FenestraApi::System::getGlobalScale(), 100, g.FontSize + style.FramePadding.y * 2.0F);
+        ImVec2 size = CalcItemSize(ImVec2(100, 5) * FenestraManager::System::getGlobalScale(), 100, g.FontSize + style.FramePadding.y * 2.0F);
         ImRect bb(pos, pos + size);
         ItemSize(size, 0);
         if (!ItemAdd(bb, 0))

@@ -99,7 +99,7 @@ namespace fene::crash {
     static void signalHandler(int signalNumber, const std::string &signalName) {
         #if !defined (DEBUG)
             if (signalNumber == SIGINT) {
-                FenestraApi::System::closeApplication();
+                FenestraManager::System::closeApplication();
                 return;
             }
         #endif

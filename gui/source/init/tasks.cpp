@@ -36,7 +36,7 @@ namespace fene::init {
                 // The latter issue can be circumvented by using the native OS decorations or by using the software renderer.
                 // This code here tries to detect if the user has a problematic Intel GPU and if so, it will default to the native OS decorations.
                 // This doesn't actually solve the issue at all but at least it makes Fenestra applications usable on these GPUs.
-                const bool isIntelGPU = fene::containsIgnoreCase(FenestraApi::System::getGPUVendor(), "Intel");
+                const bool isIntelGPU = fene::containsIgnoreCase(FenestraManager::System::getGPUVendor(), "Intel");
                 if (isIntelGPU) {
                     log::warn("Intel GPU detected! Intel's OpenGL GPU drivers are extremely buggy and can cause issues. If you experience any rendering bugs, please enable the Native OS Decoration setting or try the software rendererd -NoGPU release.");
 
@@ -48,7 +48,7 @@ namespace fene::init {
                         "HD Graphics 3000"
                     };
 
-                    const auto &glRenderer = FenestraApi::System::getGLRenderer();
+                    const auto &glRenderer = FenestraManager::System::getGLRenderer();
                     for (const auto &badGPU : BadGPUs) {
                         if (fene::containsIgnoreCase(glRenderer, badGPU)) {
                             result = false;
@@ -73,7 +73,7 @@ namespace fene::init {
     }
 
     bool setupEnvironment() {
-        FenestraApi::System::impl::setBorderlessWindowMode(getDefaultBorderlessWindowMode());
+        FenestraManager::System::impl::setBorderlessWindowMode(getDefaultBorderlessWindowMode());
 
         return true;
     }
@@ -108,7 +108,7 @@ namespace fene::init {
             log::fatal("To the person fixing this, read the comment above this message for more information.");
         });
 
-        FenestraApi::System::impl::cleanup();
+        FenestraManager::System::impl::cleanup();
 
         EventApplicationClosing::post();
         EventManager::clear();
@@ -134,7 +134,7 @@ namespace fene::init {
         if (plugins.empty()) {
             log::error("No plugins found!");
 
-            FenestraApi::System::impl::addInitArgument("no-plugins");
+            FenestraManager::System::impl::addInitArgument("no-plugins");
             return false;
         }
 
@@ -194,12 +194,12 @@ namespace fene::init {
         // If no plugins were loaded successfully, the Application wasn't installed properly. This will trigger an error popup later on
         if (loadErrors == plugins.size()) {
             log::error("No plugins loaded successfully!");
-            FenestraApi::System::impl::addInitArgument("no-plugins");
+            FenestraManager::System::impl::addInitArgument("no-plugins");
             return false;
         }
         if (pluginNames.size() != plugins.size()) {
             log::error("Duplicate plugins detected!");
-            FenestraApi::System::impl::addInitArgument("duplicate-plugins");
+            FenestraManager::System::impl::addInitArgument("duplicate-plugins");
             return false;
         }
 

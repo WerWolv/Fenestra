@@ -18,7 +18,7 @@ namespace fene::paths {
 
             // In the portable Windows version, we just use the executable directory
             // Prevent the use of the AppData folder here
-            if (!FenestraApi::System::isPortableVersion()) {
+            if (!FenestraManager::System::isPortableVersion()) {
                 PWSTR wAppDataPath = nullptr;
                 if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, KF_FLAG_CREATE, nullptr, &wAppDataPath))) {
                     paths.emplace_back(wAppDataPath);
@@ -52,7 +52,7 @@ namespace fene::paths {
             for (auto &path : paths)
                 path = path / FENESTRA_APPLICATION_NAME_LOWER;
 
-            if (FenestraApi::System::isPortableVersion() || includeSystemFolders) {
+            if (FenestraManager::System::isPortableVersion() || includeSystemFolders) {
                 if (auto executablePath = wolv::io::fs::getExecutablePath(); executablePath.has_value())
                     paths.push_back(executablePath->parent_path());
             }
@@ -63,7 +63,7 @@ namespace fene::paths {
         // TODO: Add this back more generically
         /*
         // Add additional data directories to the path
-        auto additionalDirs = FenestraApi::System::getAdditionalFolderPaths();
+        auto additionalDirs = FenestraManager::System::getAdditionalFolderPaths();
         std::ranges::copy(additionalDirs, std::back_inserter(paths));
 
         // Add the project file directory to the path, if one is loaded

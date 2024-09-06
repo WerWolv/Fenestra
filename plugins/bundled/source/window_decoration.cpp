@@ -59,7 +59,7 @@ namespace fene::plugin::bundled {
 
         void drawFooter(ImDrawList *drawList, ImVec2 dockSpaceSize) {
             auto dockId = ImGui::DockSpace(ImGui::GetID("FenestraMainDock"), dockSpaceSize);
-            FenestraApi::System::impl::setMainDockSpaceId(dockId);
+            FenestraManager::System::impl::setMainDockSpaceId(dockId);
 
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y - 1_scaled);
             ImGui::Separator();
@@ -171,9 +171,9 @@ namespace fene::plugin::bundled {
             s_searchBarPosition = searchBoxPos.x;
 
             // Custom title bar buttons implementation for borderless window mode
-            [[maybe_unused]] auto window = static_cast<SDL_Window*>(FenestraApi::System::getMainWindowHandle());
+            [[maybe_unused]] auto window = static_cast<SDL_Window*>(FenestraManager::System::getMainWindowHandle());
             bool titleBarButtonsVisible = false;
-            if (FenestraApi::System::isBorderlessWindowModeEnabled()) {
+            if (FenestraManager::System::isBorderlessWindowModeEnabled()) {
                 #if defined(OS_WINDOWS)
                     titleBarButtonsVisible = true;
 
@@ -194,7 +194,7 @@ namespace fene::plugin::bundled {
 
                     // Draw close button
                     if (ImGuiExt::TitleBarButton(ICON_VS_CHROME_CLOSE, buttonSize)) {
-                        FenestraApi::System::closeApplication();
+                        FenestraManager::System::closeApplication();
                     }
 
                     ImGui::PopStyleColor(2);
@@ -365,11 +365,11 @@ namespace fene::plugin::bundled {
             if (ImGui::BeginMainMenuBar()) {
                 ImGui::Dummy({});
 
-                auto window = static_cast<SDL_Window*>(FenestraApi::System::getMainWindowHandle());
+                auto window = static_cast<SDL_Window*>(FenestraManager::System::getMainWindowHandle());
 
                 ImGui::PopStyleVar(2);
 
-                if (FenestraApi::System::isBorderlessWindowModeEnabled()) {
+                if (FenestraManager::System::isBorderlessWindowModeEnabled()) {
                     #if defined(OS_WINDOWS)
                         ImGui::SetCursorPosX(5_scaled);
                         ImGui::Image(s_logoTexture, ImVec2(menuBarHeight, menuBarHeight));
@@ -398,7 +398,7 @@ namespace fene::plugin::bundled {
 
                     ImGui::Separator();
 
-                    if (ImGui::MenuItem(ICON_VS_CHROME_CLOSE " Close"))    FenestraApi::System::closeApplication();
+                    if (ImGui::MenuItem(ICON_VS_CHROME_CLOSE " Close"))    FenestraManager::System::closeApplication();
 
                     ImGui::EndPopup();
                 }
@@ -407,8 +407,8 @@ namespace fene::plugin::bundled {
                 drawTitleBar();
 
                 #if defined(OS_MACOS)
-                    if (FenestraApi::System::isBorderlessWindowModeEnabled()) {
-                        const auto windowSize = FenestraApi::System::getMainWindowSize();
+                    if (FenestraManager::System::isBorderlessWindowModeEnabled()) {
+                        const auto windowSize = FenestraManager::System::getMainWindowSize();
                         const auto menuUnderlaySize = ImVec2(windowSize.x, ImGui::GetCurrentWindowRead()->MenuBarHeight);
 
                         ImGui::SetCursorPos(ImVec2());
@@ -460,7 +460,7 @@ namespace fene::plugin::bundled {
 
             ImGuiViewport *viewport = ImGui::GetMainViewport();
             ImGui::SetNextWindowPos(viewport->WorkPos);
-            ImGui::SetNextWindowSize(FenestraApi::System::getMainWindowSize() - ImVec2(0, ImGui::GetTextLineHeightWithSpacing()));
+            ImGui::SetNextWindowSize(FenestraManager::System::getMainWindowSize() - ImVec2(0, ImGui::GetTextLineHeightWithSpacing()));
             ImGui::SetNextWindowViewport(viewport->ID);
             ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0F);
             ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0F);
@@ -485,7 +485,7 @@ namespace fene::plugin::bundled {
                     footerHeight += ImGui::GetStyle().FramePadding.y * 2;
                 #endif
 
-                const auto dockSpaceSize = FenestraApi::System::getMainWindowSize() - ImVec2(sidebarWidth, menuBarHeight * 2 + footerHeight - ImGui::GetStyle().FramePadding.y);
+                const auto dockSpaceSize = FenestraManager::System::getMainWindowSize() - ImVec2(sidebarWidth, menuBarHeight * 2 + footerHeight - ImGui::GetStyle().FramePadding.y);
 
                 ImGui::SetCursorPosX(sidebarWidth);
                 drawFooter(drawList, dockSpaceSize);
@@ -535,7 +535,7 @@ namespace fene::plugin::bundled {
             s_windowTitle     = prefix + fene::limitStringLength(title, 32) + postfix;
             s_windowTitleFull = prefix + title + postfix;
 
-            auto window = static_cast<SDL_Window*>(FenestraApi::System::getMainWindowHandle());
+            auto window = static_cast<SDL_Window*>(FenestraManager::System::getMainWindowHandle());
             if (window != nullptr) {
                 if (title != ApplicationTitle)
                     title = std::string(ApplicationTitle) + " - " + title;

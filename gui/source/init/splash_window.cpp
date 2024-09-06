@@ -41,8 +41,8 @@ namespace fene::init {
             log::debug("OpenGL Version: '{}'", glVersion);
             log::debug("OpenGL Shading Language Version: '{}'", glShadingLanguageVersion);
 
-            FenestraApi::System::impl::setGPUVendor(glVendor);
-            FenestraApi::System::impl::setGLRenderer(glRenderer);
+            FenestraManager::System::impl::setGPUVendor(glVendor);
+            FenestraManager::System::impl::setGLRenderer(glRenderer);
         }
 
         RequestAddInitTask::subscribe([this](const std::string& name, bool async, const TaskFunction &function){
@@ -266,8 +266,8 @@ namespace fene::init {
                 scale = 1.0F;
             #endif
 
-            FenestraApi::System::impl::setGlobalScale(scale);
-            FenestraApi::System::impl::setNativeScale(scale);
+            FenestraManager::System::impl::setGlobalScale(scale);
+            FenestraManager::System::impl::setNativeScale(scale);
 
             log::info("Native scaling set to: {:.1f}", scale);
         }
@@ -294,7 +294,7 @@ namespace fene::init {
 
         auto &io = ImGui::GetIO();
 
-        ImGui::GetStyle().ScaleAllSizes(FenestraApi::System::getGlobalScale());
+        ImGui::GetStyle().ScaleAllSizes(FenestraManager::System::getGlobalScale());
 
         // Load fonts necessary for the splash screen
         {
@@ -302,7 +302,7 @@ namespace fene::init {
 
             ImFontConfig cfg;
             cfg.OversampleH = cfg.OversampleV = 1, cfg.PixelSnapH = true;
-            cfg.SizePixels = FenestraApi::Fonts::DefaultFontSize;
+            cfg.SizePixels = FenestraManager::Fonts::DefaultFontSize;
             io.Fonts->AddFontDefault(&cfg);
 
             std::uint8_t *px;

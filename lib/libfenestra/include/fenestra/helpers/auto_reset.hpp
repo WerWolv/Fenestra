@@ -21,7 +21,7 @@ namespace fene {
         using Type = T;
 
         AutoReset() {
-            FenestraApi::System::impl::addAutoResetObject(this);
+            FenestraManager::System::impl::addAutoResetObject(this);
         }
 
         T* operator->() {
@@ -65,7 +65,7 @@ namespace fene {
         }
 
     private:
-        friend void FenestraApi::System::impl::cleanup();
+        friend void FenestraManager::System::impl::cleanup();
 
         void reset() override {
             if constexpr (requires { m_value.reset(); }) {

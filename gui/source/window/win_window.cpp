@@ -167,11 +167,11 @@ namespace fene {
                 POINT cursor = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
 
                 const POINT border {
-                    static_cast<LONG>((::GetSystemMetrics(SM_CXFRAME) + ::GetSystemMetrics(SM_CXPADDEDBORDER)) * FenestraApi::System::getGlobalScale()),
-                    static_cast<LONG>((::GetSystemMetrics(SM_CYFRAME) + ::GetSystemMetrics(SM_CXPADDEDBORDER)) * FenestraApi::System::getGlobalScale())
+                    static_cast<LONG>((::GetSystemMetrics(SM_CXFRAME) + ::GetSystemMetrics(SM_CXPADDEDBORDER)) * FenestraManager::System::getGlobalScale()),
+                    static_cast<LONG>((::GetSystemMetrics(SM_CYFRAME) + ::GetSystemMetrics(SM_CXPADDEDBORDER)) * FenestraManager::System::getGlobalScale())
                 };
 
-                if (SDL_GetDisplayForWindow(static_cast<SDL_Window*>(FenestraApi::System::getMainWindowHandle())) == 0) {
+                if (SDL_GetDisplayForWindow(static_cast<SDL_Window*>(FenestraManager::System::getMainWindowHandle())) == 0) {
                     return HTCLIENT;
                 }
 
@@ -198,7 +198,7 @@ namespace fene {
 
                 std::string_view hoveredWindowName = GImGui->HoveredWindow == nullptr ? "" : GImGui->HoveredWindow->Name;
 
-                if (!FenestraApi::System::impl::isWindowResizable()) {
+                if (!FenestraManager::System::impl::isWindowResizable()) {
                     if (result != RegionClient) {
                         return HTCAPTION;
                     }
@@ -338,7 +338,7 @@ namespace fene {
             }
         }
 
-        if (FenestraApi::System::isDebugBuild()) {
+        if (FenestraManager::System::isDebugBuild()) {
             // If the application is running in debug mode, Fenestra applications run under the CONSOLE subsystem,
             // so we don't need to do anything besides enabling ANSI colors
             log::impl::enableColorPrinting();
@@ -380,7 +380,7 @@ namespace fene {
         CoInitialize(nullptr);
         OleInitialize(nullptr);
 
-        bool borderlessWindowMode = FenestraApi::System::isBorderlessWindowModeEnabled();
+        bool borderlessWindowMode = FenestraManager::System::isBorderlessWindowModeEnabled();
 
         // Set up the correct window procedure based on the borderless window mode state
         if (borderlessWindowMode) {
@@ -404,8 +404,8 @@ namespace fene {
             }
 
             EventSetTaskBarIconState::subscribe([hwnd](u32 state, u32 type, u32 progress){
-                using enum FenestraApi::System::TaskProgressState;
-                switch (FenestraApi::System::TaskProgressState(state)) {
+                using enum FenestraManager::System::TaskProgressState;
+                switch (FenestraManager::System::TaskProgressState(state)) {
                     case Reset:
                         s_taskbarList->SetProgressState(hwnd, TBPF_NOPROGRESS);
                         s_taskbarList->SetProgressValue(hwnd, 0, 0);
@@ -419,8 +419,8 @@ namespace fene {
                         break;
                 }
 
-                using enum FenestraApi::System::TaskProgressType;
-                switch (FenestraApi::System::TaskProgressType(type)) {
+                using enum FenestraManager::System::TaskProgressType;
+                switch (FenestraManager::System::TaskProgressType(type)) {
                     case Normal:
                         s_taskbarList->SetProgressState(hwnd, TBPF_NORMAL);
                         break;
@@ -498,7 +498,7 @@ namespace fene {
         ::SetWindowLong(hwnd, GWL_STYLE, (GetWindowLong(hwnd, GWL_STYLE) | WS_OVERLAPPEDWINDOW) & ~WS_POPUP);
         ::SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_COMPOSITED | WS_EX_LAYERED);
 
-        if (!FenestraApi::System::impl::isWindowResizable()) {
+        if (!FenestraManager::System::impl::isWindowResizable()) {
             if (SDL_GetWindowFlags(m_window) & SDL_WINDOW_MAXIMIZED) {
                 SDL_RestoreWindow(m_window);
             }

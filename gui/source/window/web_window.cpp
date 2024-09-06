@@ -104,7 +104,7 @@ namespace fene {
         setupInputModeListener();
         fixCanvasInPlace();
 
-        bool themeFollowSystem = FenestraApi::System::usesSystemThemeDetection();
+        bool themeFollowSystem = FenestraManager::System::usesSystemThemeDetection();
         EventOSThemeChanged::subscribe(this, [themeFollowSystem] {
             if (!themeFollowSystem) return;
 

@@ -16,15 +16,15 @@ namespace fene::fonts {
          *  efficient when packing the glyphs into the font atlas and therefor make the atlas much smaller.
          */
 
-        FenestraApi::Fonts::loadFont("Blender Icons",  romfs::get("fonts/blendericons.ttf").span<u8>(),{ { ICON_MIN_BI, ICON_MAX_BI } }, { -1_scaled, -1_scaled });
+        FenestraManager::Fonts::loadFont("Blender Icons",  romfs::get("fonts/blendericons.ttf").span<u8>(),{ { ICON_MIN_BI, ICON_MAX_BI } }, { -1_scaled, -1_scaled });
 
-        FenestraApi::Fonts::loadFont("VS Codicons", romfs::get("fonts/codicons.ttf").span<u8>(),
+        FenestraManager::Fonts::loadFont("VS Codicons", romfs::get("fonts/codicons.ttf").span<u8>(),
             {
                 { ICON_MIN_VS, ICON_MAX_VS }
             },
             { -1_scaled, -1_scaled });
 
-        FenestraApi::Fonts::loadFont("Unifont", romfs::get("fonts/unifont.otf").span<u8>(), {}, {}, 0, 16);
+        FenestraManager::Fonts::loadFont("Unifont", romfs::get("fonts/unifont.otf").span<u8>(), {}, {}, 0, 16);
     }
 
 }

@@ -16,7 +16,7 @@
     #include <sys/utsname.h>
 #endif
 
-namespace fene::FenestraApi {
+namespace fene::FenestraManager {
 
     namespace System {
 

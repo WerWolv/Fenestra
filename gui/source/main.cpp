@@ -40,11 +40,11 @@ int main(int argc, char **argv) {
     }
 
     // Log some system information to aid debugging when users share their logs
-    log::info("Welcome to {} {}!", FENESTRA_APPLICATION_NAME, FenestraApi::System::getApplicationVersion());
-    log::info("Compiled using commit {}@{}", FenestraApi::System::getCommitBranch(), FenestraApi::System::getCommitHash());
-    log::info("Running on {} {} ({})", FenestraApi::System::getOSName(), FenestraApi::System::getOSVersion(), FenestraApi::System::getArchitecture());
+    log::info("Welcome to {} {}!", FENESTRA_APPLICATION_NAME, FenestraManager::System::getApplicationVersion());
+    log::info("Compiled using commit {}@{}", FenestraManager::System::getCommitBranch(), FenestraManager::System::getCommitHash());
+    log::info("Running on {} {} ({})", FenestraManager::System::getOSName(), FenestraManager::System::getOSVersion(), FenestraManager::System::getArchitecture());
     #if defined(OS_LINUX)
-    auto distro = FenestraApi::System::getLinuxDistro().value();
+    auto distro = FenestraManager::System::getLinuxDistro().value();
     log::info("Linux distribution: {}. Version: {}", distro.name, distro.version == "" ? "None" : distro.version);
     #endif
 

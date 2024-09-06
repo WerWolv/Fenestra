@@ -60,7 +60,7 @@ namespace fene {
 
         // Handle fatal error popups for errors detected during initialization
         {
-            for (const auto &[argument, value] : FenestraApi::System::getInitArguments()) {
+            for (const auto &[argument, value] : FenestraManager::System::getInitArguments()) {
                 if (argument == "no-plugins") {
                     openEmergencyPopup("No Plugins");
                 } else if (argument == "duplicate-plugins") {
@@ -119,7 +119,7 @@ namespace fene {
             width = float(width) * newScaling / oldScaling;
             height = float(height) * newScaling / oldScaling;
 
-            FenestraApi::System::impl::setMainWindowSize(width, height);
+            FenestraManager::System::impl::setMainWindowSize(width, height);
             SDL_SetWindowSize(m_window, width, height);
         });
 
@@ -130,11 +130,11 @@ namespace fene {
                     break;
                 case SDL_EVENT_WINDOW_RESIZED:
                     if (event->window.windowID == SDL_GetWindowID(m_window))
-                        FenestraApi::System::impl::setMainWindowSize(event->window.data1, event->window.data2);
+                        FenestraManager::System::impl::setMainWindowSize(event->window.data1, event->window.data2);
                     break;
                 case SDL_EVENT_WINDOW_MOVED:
                     if (event->window.windowID == SDL_GetWindowID(m_window))
-                        FenestraApi::System::impl::setMainWindowPosition(event->window.data1, event->window.data2);
+                        FenestraManager::System::impl::setMainWindowPosition(event->window.data1, event->window.data2);
                     break;
                 case SDL_EVENT_WINDOW_EXPOSED:
                     this->fullFrame();
@@ -155,18 +155,18 @@ namespace fene {
                     break;
 
                 case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED: {
-                    int interfaceScaleSetting = FenestraApi::System::impl::isDPIScalingEnabled();
+                    int interfaceScaleSetting = FenestraManager::System::impl::isDPIScalingEnabled();
                     if (interfaceScaleSetting != 0)
                         break;
 
                     const auto newScale = SDL_GetDisplayContentScale(SDL_GetDisplayForWindow(m_window));
-                    const auto oldScale = FenestraApi::System::getNativeScale();
+                    const auto oldScale = FenestraManager::System::getNativeScale();
 
                     if (newScale == oldScale || newScale == 0 || oldScale == 0)
                         break;
 
                     EventDPIChanged::post(oldScale, newScale);
-                    FenestraApi::System::impl::setNativeScale(newScale);
+                    FenestraManager::System::impl::setNativeScale(newScale);
 
                     ThemeManager::reapplyCurrentTheme();
                     ImGui::GetStyle().ScaleAllSizes(newScale);
@@ -285,8 +285,8 @@ namespace fene {
                 SDL_GetWindowPosition(m_window, &x, &y);
                 SDL_GetWindowSize(m_window, &width, &height);
 
-                FenestraApi::System::impl::setMainWindowPosition(x, y);
-                FenestraApi::System::impl::setMainWindowSize(width, height);
+                FenestraManager::System::impl::setMainWindowPosition(x, y);
+                FenestraManager::System::impl::setMainWindowSize(width, height);
             }
 
             // Determine if the application should be in long sleep mode
@@ -309,15 +309,15 @@ namespace fene {
 
             m_lastStartFrameTime = SDL_GetTicks();
 
-            static ImVec2 lastWindowSize = FenestraApi::System::getMainWindowSize();
-            if (FenestraApi::System::impl::isWindowResizable()) {
-                lastWindowSize = FenestraApi::System::getMainWindowSize();
+            static ImVec2 lastWindowSize = FenestraManager::System::getMainWindowSize();
+            if (FenestraManager::System::impl::isWindowResizable()) {
+                lastWindowSize = FenestraManager::System::getMainWindowSize();
             } else {
             }
 
             this->fullFrame();
 
-            FenestraApi::System::impl::setLastFrameTime(SDL_GetTicks() - m_lastStartFrameTime);
+            FenestraManager::System::impl::setLastFrameTime(SDL_GetTicks() - m_lastStartFrameTime);
         }
 
         // Hide the window as soon as the render loop exits to make the window
@@ -339,7 +339,7 @@ namespace fene {
         // Handle all undocked floating windows
         ImGuiViewport *viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(viewport->WorkPos);
-        ImGui::SetNextWindowSize(FenestraApi::System::getMainWindowSize() - ImVec2(0, ImGui::GetTextLineHeightWithSpacing()));
+        ImGui::SetNextWindowSize(FenestraManager::System::getMainWindowSize() - ImVec2(0, ImGui::GetTextLineHeightWithSpacing()));
         ImGui::SetNextWindowViewport(viewport->ID);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0F);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0F);
@@ -386,8 +386,8 @@ namespace fene {
             };
 
             if (m_emergencyPopupOpen) {
-                const auto pos = FenestraApi::System::getMainWindowPosition();
-                const auto size = FenestraApi::System::getMainWindowSize();
+                const auto pos = FenestraManager::System::getMainWindowPosition();
+                const auto size = FenestraManager::System::getMainWindowSize();
                 ImGui::GetBackgroundDrawList()->AddRectFilled(pos, pos + size, ImGui::GetColorU32(ImGuiCol_WindowBg) | 0xFF000000);
             }
 
@@ -408,7 +408,7 @@ namespace fene {
 
                 ImGui::NewLine();
                 if (ImGuiExt::DimmedButton("Close Application", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
-                    FenestraApi::System::closeApplication(true);
+                    FenestraManager::System::closeApplication(true);
 
                 ImGui::EndPopup();
             }
@@ -428,7 +428,7 @@ namespace fene {
 
                 ImGui::NewLine();
                 if (ImGuiExt::DimmedButton("Close Application", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
-                    FenestraApi::System::closeApplication(true);
+                    FenestraManager::System::closeApplication(true);
 
                 ImGui::EndPopup();
             }
@@ -499,7 +499,7 @@ namespace fene {
                 const auto flags = currPopup->getFlags() | (!hasConstraints ? (ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize) : ImGuiWindowFlags_None);
 
                 if (!positionSet) {
-                    ImGui::SetNextWindowPos(FenestraApi::System::getMainWindowPosition() + (FenestraApi::System::getMainWindowSize() / 2.0F), ImGuiCond_Always, ImVec2(0.5F, 0.5F));
+                    ImGui::SetNextWindowPos(FenestraManager::System::getMainWindowPosition() + (FenestraManager::System::getMainWindowSize() / 2.0F), ImGuiCond_Always, ImVec2(0.5F, 0.5F));
 
                     if (sizeSet)
                         positionSet = true;
@@ -517,8 +517,8 @@ namespace fene {
                         // If not done, the popup will be stuck outside the main window and cannot be accessed anymore
                         if ((ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) == ImGuiConfigFlags_None) {
                             const auto currWindowPos = ImGui::GetWindowPos();
-                            const auto minWindowPos = FenestraApi::System::getMainWindowPosition() - ImGui::GetWindowSize();
-                            const auto maxWindowPos = FenestraApi::System::getMainWindowPosition() + FenestraApi::System::getMainWindowSize();
+                            const auto minWindowPos = FenestraManager::System::getMainWindowPosition() - ImGui::GetWindowSize();
+                            const auto maxWindowPos = FenestraManager::System::getMainWindowPosition() + FenestraManager::System::getMainWindowSize();
                             if (currWindowPos.x > maxWindowPos.x || currWindowPos.y > maxWindowPos.y || currWindowPos.x < minWindowPos.x || currWindowPos.y < minWindowPos.y) {
                                 positionSet = false;
                                 GImGui->MovingWindow = nullptr;
@@ -554,7 +554,7 @@ namespace fene {
                 const auto toastHeight = 60_scaled;
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5_scaled);
                 ImGui::SetNextWindowSize(ImVec2(280_scaled, toastHeight));
-                ImGui::SetNextWindowPos((FenestraApi::System::getMainWindowPosition() + FenestraApi::System::getMainWindowSize()) - scaled({ 10, 10 }) - scaled({ 0, (10 + toastHeight) * index }), ImGuiCond_Always, ImVec2(1, 1));
+                ImGui::SetNextWindowPos((FenestraManager::System::getMainWindowPosition() + FenestraManager::System::getMainWindowSize()) - scaled({ 10, 10 }) - scaled({ 0, (10 + toastHeight) * index }), ImGuiCond_Always, ImVec2(1, 1));
                 if (ImGui::Begin(fmt::format("##Toast_{}", index).c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoFocusOnAppearing)) {
                     auto drawList = ImGui::GetWindowDrawList();
 
@@ -632,7 +632,7 @@ namespace fene {
 
                 // Dock the window if it's not already docked
                 if (view->didWindowJustOpen() && !ImGui::IsWindowDocked()) {
-                    ImGui::DockBuilderDockWindow(windowName.c_str(), FenestraApi::System::getMainDockSpaceId());
+                    ImGui::DockBuilderDockWindow(windowName.c_str(), FenestraManager::System::getMainDockSpaceId());
                     EventViewOpened::post(view.get());
                 }
 
@@ -742,7 +742,7 @@ namespace fene {
     }
 
     void Window::initBackend() {
-        auto initialWindowProperties = FenestraApi::System::getInitialWindowProperties();
+        auto initialWindowProperties = FenestraManager::System::getInitialWindowProperties();
 
         if (!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_TIMER)) {
             log::fatal("Failed to initialize SDL3!");
@@ -767,7 +767,7 @@ namespace fene {
         m_glContext = SDL_GL_CreateContext(m_window);
         SDL_GL_MakeCurrent(m_window, m_glContext);
 
-        FenestraApi::System::impl::setMainWindowHandle(m_window);
+        FenestraManager::System::impl::setMainWindowHandle(m_window);
 
         if (m_window == nullptr) {
             log::fatal("Failed to create window!");
@@ -794,7 +794,7 @@ namespace fene {
                 y = initialWindowProperties->y;
             }
 
-            FenestraApi::System::impl::setMainWindowPosition(x, y);
+            FenestraManager::System::impl::setMainWindowPosition(x, y);
             SDL_SetWindowPosition(m_window, x, y);
         }
 
@@ -808,7 +808,7 @@ namespace fene {
                 height = initialWindowProperties->height;
             }
 
-            FenestraApi::System::impl::setMainWindowSize(width, height);
+            FenestraManager::System::impl::setMainWindowSize(width, height);
             SDL_SetWindowSize(m_window, width, height);
         }
     }
@@ -820,7 +820,7 @@ namespace fene {
     void Window::initImGui() {
         IMGUI_CHECKVERSION();
 
-        auto fonts = FenestraApi::Fonts::getFontAtlas();
+        auto fonts = FenestraManager::Fonts::getFontAtlas();
 
         if (fonts == nullptr) {
             fonts = IM_NEW(ImFontAtlas)();
@@ -842,7 +842,7 @@ namespace fene {
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
         io.ConfigWindowsMoveFromTitleBarOnly = true;
 
-        if (FenestraApi::System::isMutliWindowModeEnabled())
+        if (FenestraManager::System::isMutliWindowModeEnabled())
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
         io.ConfigViewportsNoTaskBarIcon = false;
@@ -858,7 +858,7 @@ namespace fene {
 
         io.UserData = &m_imguiCustomData;
 
-        const auto scale = float(FenestraApi::System::getGlobalScale());
+        const auto scale = float(FenestraManager::System::getGlobalScale());
         style.ScaleAllSizes(scale);
         io.DisplayFramebufferScale = ImVec2(scale, scale);
         io.Fonts->SetTexID(fonts->TexID);

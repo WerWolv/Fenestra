@@ -50,7 +50,7 @@ namespace fene {
     }
 
     void Window::setupNativeWindow() {
-        bool themeFollowSystem = FenestraApi::System::usesSystemThemeDetection();
+        bool themeFollowSystem = FenestraManager::System::usesSystemThemeDetection();
         EventOSThemeChanged::subscribe(this, [themeFollowSystem] {
             if (!themeFollowSystem) return;
 
@@ -63,7 +63,7 @@ namespace fene {
         if (themeFollowSystem)
             EventOSThemeChanged::post();
 
-        setupMacosWindowStyle(m_window, FenestraApi::System::isBorderlessWindowModeEnabled());
+        setupMacosWindowStyle(m_window, FenestraManager::System::isBorderlessWindowModeEnabled());
     }
 
     void Window::beginNativeWindowFrame() {

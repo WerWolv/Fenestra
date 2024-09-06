@@ -89,7 +89,7 @@ namespace fene::subcommands {
         }
 
         // Exit the process if it's not the main instance (the commands have been forwarded to another instance)
-        if (!FenestraApi::System::isMainInstance()) {
+        if (!FenestraManager::System::isMainInstance()) {
             std::exit(0);
         }
     }
@@ -113,7 +113,7 @@ namespace fene::subcommands {
     void registerSubCommand(const std::string &cmdName, const ForwardCommandHandler &handler) {
         log::debug("Registered new forward command handler: {}", cmdName);
 
-        FenestraApi::Messaging::registerHandler(fmt::format("command/{}", cmdName), [handler](const std::vector<u8> &eventData){
+        FenestraManager::Messaging::registerHandler(fmt::format("command/{}", cmdName), [handler](const std::vector<u8> &eventData){
             std::string string(reinterpret_cast<const char *>(eventData.data()), eventData.size());
 
             std::vector<std::string> args;

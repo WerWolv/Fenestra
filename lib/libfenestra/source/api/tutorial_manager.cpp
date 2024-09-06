@@ -181,8 +181,8 @@ namespace fene {
 
             {
                 if (!unlocalizedText.empty()) {
-                    const auto mainWindowPos = FenestraApi::System::getMainWindowPosition();
-                    const auto mainWindowSize = FenestraApi::System::getMainWindowSize();
+                    const auto mainWindowPos = FenestraManager::System::getMainWindowPosition();
+                    const auto mainWindowSize = FenestraManager::System::getMainWindowSize();
 
                     const auto margin = ImGui::GetStyle().WindowPadding;
 
@@ -215,10 +215,10 @@ namespace fene {
     }
 
     void TutorialManager::drawMessageBox(std::optional<Tutorial::Step::Message> message) {
-        const auto windowStart = FenestraApi::System::getMainWindowPosition() + scaled({ 10, 10 });
-        const auto windowEnd = FenestraApi::System::getMainWindowPosition() + FenestraApi::System::getMainWindowSize() - scaled({ 10, 10 });
+        const auto windowStart = FenestraManager::System::getMainWindowPosition() + scaled({ 10, 10 });
+        const auto windowEnd = FenestraManager::System::getMainWindowPosition() + FenestraManager::System::getMainWindowSize() - scaled({ 10, 10 });
 
-        ImVec2 position = FenestraApi::System::getMainWindowPosition() + FenestraApi::System::getMainWindowSize() / 2.0F;
+        ImVec2 position = FenestraManager::System::getMainWindowPosition() + FenestraManager::System::getMainWindowSize() / 2.0F;
         ImVec2 pivot    = { 0.5F, 0.5F };
 
         if (!message.has_value()) {

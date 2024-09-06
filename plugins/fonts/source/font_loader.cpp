@@ -65,7 +65,7 @@ namespace fene::fonts {
             Font addDefaultFont() {
                 ImFontConfig config = m_config;
                 config.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting;
-                config.SizePixels = std::floor(float(FenestraApi::System::getGlobalScale())) * 13.0F;
+                config.SizePixels = std::floor(float(FenestraManager::System::getGlobalScale())) * 13.0F;
 
                 #if defined(OS_MACOS)
                     config.SizePixels *= 2.0F;
@@ -168,16 +168,16 @@ namespace fene::fonts {
                 return result;
             }
 
-            [[nodiscard]] float calculateFontDescend(const FenestraApi::Fonts::Font &font, float fontSize) const {
+            [[nodiscard]] float calculateFontDescend(const FenestraManager::Fonts::Font &font, float fontSize) const {
                 auto atlas = std::make_unique<ImFontAtlas>();
                 auto cfg = m_config;
 
                 // Calculate the expected font size
                 float size = fontSize;
                 if (font.defaultSize.has_value())
-                    size = float(font.defaultSize.value()) * std::max(1.0F, std::floor(FenestraApi::Fonts::getFontSize() / FenestraApi::Fonts::DefaultFontSize));
+                    size = float(font.defaultSize.value()) * std::max(1.0F, std::floor(FenestraManager::Fonts::getFontSize() / FenestraManager::Fonts::DefaultFontSize));
                 else
-                    size = std::max(1.0F, std::floor(size / FenestraApi::Fonts::DefaultFontSize)) * FenestraApi::Fonts::DefaultFontSize;
+                    size = std::max(1.0F, std::floor(size / FenestraManager::Fonts::DefaultFontSize)) * FenestraManager::Fonts::DefaultFontSize;
 
                 cfg.MergeMode = false;
                 cfg.SizePixels = size;
@@ -231,7 +231,7 @@ namespace fene::fonts {
 
         std::fs::path findCustomFontPath() {
             // Find the custom font file specified in the settings
-            auto fontFile = FenestraApi::Fonts::getCustomFont().value_or(FenestraApi::Fonts::CustomFont { }).fontPath;
+            auto fontFile = FenestraManager::Fonts::getCustomFont().value_or(FenestraManager::Fonts::CustomFont { }).fontPath;
             if (!fontFile.empty()) {
                 if (!wolv::io::fs::exists(fontFile) || !wolv::io::fs::isRegularFile(fontFile)) {
                     log::warn("Custom font file {} not found! Falling back to default font.", wolv::util::toUTF8String(fontFile));
@@ -258,20 +258,20 @@ namespace fene::fonts {
         }
 
         float getFontSize() {
-            float fontSize = FenestraApi::Fonts::DefaultFontSize;
+            float fontSize = FenestraManager::Fonts::DefaultFontSize;
 
-            if (auto scaling = FenestraApi::System::getGlobalScale(); u32(scaling) * 10 == u32(scaling * 10))
+            if (auto scaling = FenestraManager::System::getGlobalScale(); u32(scaling) * 10 == u32(scaling * 10))
                 fontSize *= scaling;
             else
                 fontSize *= scaling * 0.75F;
 
             // Fall back to the default font if the global scale is 0
             if (fontSize == 0.0F)
-                fontSize = FenestraApi::Fonts::DefaultFontSize;
+                fontSize = FenestraManager::Fonts::DefaultFontSize;
 
             // If a custom font is used, adjust the font size
-            if (!FenestraApi::Fonts::getCustomFont().has_value()) {
-                fontSize = FenestraApi::Fonts::getFontSize() * FenestraApi::System::getGlobalScale();
+            if (!FenestraManager::Fonts::getCustomFont().has_value()) {
+                fontSize = FenestraManager::Fonts::getFontSize() * FenestraManager::System::getGlobalScale();
             }
 
             return fontSize;
@@ -286,15 +286,15 @@ namespace fene::fonts {
         // Check if Unicode support is enabled in the settings and that the user doesn't use the No GPU version on Windows
         // The Mesa3D software renderer on Windows identifies itself as "VMware, Inc."
         bool shouldLoadUnicode =
-                FenestraApi::Fonts::shouldLoadAllUnicodeCharacters() &&
-                FenestraApi::System::getGPUVendor() != "VMware, Inc.";
+                FenestraManager::Fonts::shouldLoadAllUnicodeCharacters() &&
+                FenestraManager::System::getGPUVendor() != "VMware, Inc.";
 
         if (!loadUnicodeCharacters)
             shouldLoadUnicode = false;
 
         fontAtlas.enableUnicodeCharacters(shouldLoadUnicode);
 
-        auto customFont = FenestraApi::Fonts::getCustomFont();
+        auto customFont = FenestraManager::Fonts::getCustomFont();
 
         // If a custom font is set in the settings, load the rest of the settings as well
         if (customFont.has_value()) {
@@ -302,13 +302,13 @@ namespace fene::fonts {
             fontAtlas.setItalic(customFont->italic);
             fontAtlas.setAntiAliasing(customFont->antiAliased);
 
-            FenestraApi::Fonts::impl::setCustomFontPath(findCustomFontPath());
+            FenestraManager::Fonts::impl::setCustomFontPath(findCustomFontPath());
         }
-        FenestraApi::Fonts::impl::setFontSize(getFontSize());
+        FenestraManager::Fonts::impl::setFontSize(getFontSize());
 
 
-        const auto fontSize = FenestraApi::Fonts::getFontSize();
-        const auto &customFontPath = customFont.value_or(FenestraApi::Fonts::CustomFont { }).fontPath;
+        const auto fontSize = FenestraManager::Fonts::getFontSize();
+        const auto &customFontPath = customFont.value_or(FenestraManager::Fonts::CustomFont { }).fontPath;
 
         // Try to load the custom font if one was set
         std::optional<Font> defaultFont;
@@ -322,11 +322,11 @@ namespace fene::fonts {
 
         // If there's no custom font set, or it failed to load, fall back to the default font
         if (!defaultFont.has_value()) {
-            auto selectedFont = FenestraApi::Fonts::getSelectedFont();
+            auto selectedFont = FenestraManager::Fonts::getSelectedFont();
 
-            if (selectedFont == FenestraApi::Fonts::SelectedFont::BuiltinPixelPerfect)
+            if (selectedFont == FenestraManager::Fonts::SelectedFont::BuiltinPixelPerfect)
                 defaultFont = fontAtlas.addDefaultFont();
-            else if (selectedFont == FenestraApi::Fonts::SelectedFont::BuiltinSmooth)
+            else if (selectedFont == FenestraManager::Fonts::SelectedFont::BuiltinSmooth)
                 defaultFont = fontAtlas.addFontFromRomFs("fonts/firacode.ttf", fontSize * 1.1, true, ImVec2());
 
             if (!fontAtlas.build()) {
@@ -341,7 +341,7 @@ namespace fene::fonts {
             static std::list<ImVector<ImWchar>> glyphRanges;
             glyphRanges.clear();
 
-            for (auto &font : FenestraApi::Fonts::impl::getFonts()) {
+            for (auto &font : FenestraManager::Fonts::impl::getFonts()) {
                 // Construct the glyph range for the font
                 ImVector<ImWchar> glyphRange;
                 if (!font.glyphRanges.empty()) {
@@ -367,14 +367,14 @@ namespace fene::fonts {
             if (fontAtlas.build()) {
                 ImGui_ImplOpenGL3_DestroyFontsTexture();
                 ImGui_ImplOpenGL3_CreateFontsTexture();
-                FenestraApi::Fonts::impl::setFontAtlas(fontAtlas.getAtlas());
+                FenestraManager::Fonts::impl::setFontAtlas(fontAtlas.getAtlas());
             }
         });
 
         // Build the font atlas
         if (fontAtlas.build()) {
             // Set the font atlas if the build was successful
-            FenestraApi::Fonts::impl::setFontAtlas(fontAtlas.getAtlas());
+            FenestraManager::Fonts::impl::setFontAtlas(fontAtlas.getAtlas());
             return true;
         }
 
@@ -382,7 +382,7 @@ namespace fene::fonts {
         // If they were disabled already, something went wrong, and we can't recover from it
         if (!shouldLoadUnicode) {
             // Reset Unicode loading and scaling factor settings back to default to make sure the user can still use the application
-            FenestraApi::Fonts::impl::setLoadAllUnicodeCharacters(false);
+            FenestraManager::Fonts::impl::setLoadAllUnicodeCharacters(false);
 
             return false;
         } else {

@@ -14,6 +14,6 @@ namespace fene::fonts {
 FENESTRA_LIBRARY_SETUP("Fonts") {
     fene::log::debug("Using romfs: '{}'", romfs::name());
 
-    fene::FenestraApi::System::addStartupTask("Loading fonts", true, fene::fonts::buildFontAtlas);
+    fene::FenestraManager::System::addStartupTask("Loading fonts", true, fene::fonts::buildFontAtlas);
     fene::fonts::registerFonts();
 }

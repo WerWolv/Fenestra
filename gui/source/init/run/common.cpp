@@ -15,7 +15,7 @@ namespace fene::init {
     std::unique_ptr<init::WindowSplash> initializeApplication() {
         auto splashWindow = std::make_unique<init::WindowSplash>();
 
-        log::info("Using '{}' GPU", FenestraApi::System::getGPUVendor());
+        log::info("Using '{}' GPU", FenestraManager::System::getGPUVendor());
 
         // Add initialization tasks to run
         TaskManager::init();

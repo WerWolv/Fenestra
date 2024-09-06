@@ -21,7 +21,7 @@ namespace fene {
         class AutoResetBase;
     }
 
-    namespace FenestraApi {
+    namespace FenestraManager {
 
         /**
          * @brief Functions to interact with various Application system settings

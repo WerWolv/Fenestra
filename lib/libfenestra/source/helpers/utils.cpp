@@ -27,19 +27,19 @@
 namespace fene {
 
     float operator""_scaled(long double value) {
-        return value * FenestraApi::System::getGlobalScale();
+        return value * FenestraManager::System::getGlobalScale();
     }
 
     float operator""_scaled(unsigned long long value) {
-        return value * FenestraApi::System::getGlobalScale();
+        return value * FenestraManager::System::getGlobalScale();
     }
 
     ImVec2 scaled(const ImVec2 &vector) {
-        return vector * FenestraApi::System::getGlobalScale();
+        return vector * FenestraManager::System::getGlobalScale();
     }
 
     ImVec2 scaled(float x, float y) {
-        return ImVec2(x, y) * FenestraApi::System::getGlobalScale();
+        return ImVec2(x, y) * FenestraManager::System::getGlobalScale();
     }
 
     std::string to_string(u128 value) {
