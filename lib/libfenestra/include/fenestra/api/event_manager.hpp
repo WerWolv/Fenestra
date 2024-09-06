@@ -14,17 +14,17 @@
 #include <wolv/types/type_name.hpp>
 
 #define EVENT_DEF_IMPL(event_name, event_name_string, should_log, ...)                                                                                                      \
-    struct event_name final : public fene::impl::Event<__VA_ARGS__> {                                                                                                      \
-        constexpr static auto Id = [] { return fene::impl::EventId(event_name_string); }();                                                                                \
+    struct event_name final : public fene::impl::Event<__VA_ARGS__> {                                                                                                       \
+        constexpr static auto Id = [] { return fene::impl::EventId(event_name_string); }();                                                                                 \
         constexpr static auto ShouldLog = (should_log);                                                                                                                     \
                                                                                                                                                                             \
         using Event::Event;                                                                                                                                                 \
                                                                                                                                                                             \
-        static fene::EventManager::EventList::iterator subscribe(Event::Callback function) { return fene::EventManager::subscribe<event_name>(std::move(function)); }     \
-        static void subscribe(void *token, auto &&function) { fene::EventManager::subscribe<event_name>(token, std::move(function)); }                            \
-        static void unsubscribe(const fene::EventManager::EventList::iterator &token) noexcept { fene::EventManager::unsubscribe(token); }                                \
-        static void unsubscribe(void *token) noexcept { fene::EventManager::unsubscribe<event_name>(token); }                                                              \
-        static void post(auto &&...args) { fene::EventManager::post<event_name>(std::forward<decltype(args)>(args)...); }                                                  \
+        static fene::EventManager::EventList::iterator subscribe(auto &&function) { return fene::EventManager::subscribe<event_name>(std::move(function)); }                \
+        static void subscribe(void *token, auto &&function) { fene::EventManager::subscribe<event_name>(token, std::move(function)); }                                      \
+        static void unsubscribe(const fene::EventManager::EventList::iterator &token) noexcept { fene::EventManager::unsubscribe(token); }                                  \
+        static void unsubscribe(void *token) noexcept { fene::EventManager::unsubscribe<event_name>(token); }                                                               \
+        static void post(auto &&...args) { fene::EventManager::post<event_name>(std::forward<decltype(args)>(args)...); }                                                   \
     }
 
 #define EVENT_DEF(event_name, ...)          EVENT_DEF_IMPL(event_name, #event_name, true, __VA_ARGS__)
@@ -69,7 +69,7 @@ namespace fene {
             using CallbackNoArgs = std::function<void()>;
 
             explicit Event(Callback func) noexcept : m_func(std::move(func)) { }
-            explicit Event(CallbackNoArgs func) noexcept requires HasParameters : m_func([func = std::move(func)]{ func(); }) { }
+            explicit Event(CallbackNoArgs func) noexcept requires HasParameters : m_func([func = std::move(func)](auto &&...){ func(); }) { }
 
             template<typename E>
             void call(Params... params) const {
