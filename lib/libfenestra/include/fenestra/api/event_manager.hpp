@@ -136,18 +136,6 @@ namespace fene {
         template<impl::EventType E>
         static void subscribe(void *token, typename E::Callback function) {
             std::scoped_lock lock(getEventMutex());
-
-            if (getTokenStore().contains(token)) {
-                auto&& [begin, end] = getTokenStore().equal_range(token);
-                const auto eventRegistered = std::any_of(begin, end, [&](auto &item) {
-                    return item.second->first == E::Id;
-                });
-                if (eventRegistered) {
-                    log::fatal("The token '{}' has already registered the same event ('{}')", token, wolv::type::getTypeName<E>());
-                    return;
-                }
-            }
-
             getTokenStore().insert({ token, subscribe<E>(function) });
         }
 
