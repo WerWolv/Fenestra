@@ -64,6 +64,17 @@ namespace fene {
             EventOSThemeChanged::post();
 
         setupMacosWindowStyle(m_window, FenestraManager::System::isBorderlessWindowModeEnabled());
+
+        EventBackendEventFired::subscribe(this, [this](const SDL_Event *event) {
+            switch (event->type) {
+                case SDL_EVENT_WINDOW_ENTER_FULLSCREEN:
+                case SDL_EVENT_WINDOW_LEAVE_FULLSCREEN:
+                    setupMacosWindowStyle(m_window, FenestraManager::System::isBorderlessWindowModeEnabled());
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 
     void Window::beginNativeWindowFrame() {

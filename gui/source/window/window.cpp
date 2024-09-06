@@ -273,6 +273,19 @@ namespace fene {
             EventBackendEventFired::post(event);
             ImGui_ImplSDL3_ProcessEvent(event);
 
+            switch (event->type) {
+                case SDL_EVENT_MOUSE_MOTION:
+                case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                case SDL_EVENT_MOUSE_BUTTON_UP:
+                case SDL_EVENT_MOUSE_WHEEL:
+                case SDL_EVENT_KEY_DOWN:
+                case SDL_EVENT_KEY_UP:
+                case SDL_EVENT_WINDOW_RESIZED:
+                    window->m_unlockFrameRate = true;
+                    break;
+            }
+
+
             return SDL_TRUE;
         }, this);
 
@@ -294,13 +307,17 @@ namespace fene {
 
             static double lockTimeout = 0;
             if (!shouldLongSleep) {
-                lockTimeout = 0.05;
+                lockTimeout = 2000;
             } else if (lockTimeout > 0) {
                 lockTimeout -= m_lastFrameTime;
             }
 
             if (shouldLongSleep && lockTimeout > 0)
                 shouldLongSleep = false;
+
+            const auto windowFlags = SDL_GetWindowFlags(m_window);
+            if (windowFlags & SDL_WINDOW_MINIMIZED || !(windowFlags & SDL_WINDOW_INPUT_FOCUS))
+                shouldLongSleep = true;
 
             m_unlockFrameRate = false;
 
@@ -309,15 +326,26 @@ namespace fene {
 
             m_lastStartFrameTime = SDL_GetTicks();
 
-            static ImVec2 lastWindowSize = FenestraManager::System::getMainWindowSize();
-            if (FenestraManager::System::impl::isWindowResizable()) {
-                lastWindowSize = FenestraManager::System::getMainWindowSize();
-            } else {
-            }
-
             this->fullFrame();
 
-            FenestraManager::System::impl::setLastFrameTime(SDL_GetTicks() - m_lastStartFrameTime);
+            if (shouldLongSleep) {
+                auto sleepStart = SDL_GetTicks();
+                while ((SDL_GetTicks() - sleepStart) < (1000 / 1)) {
+                    SDL_Delay(1);
+
+                    if (SDL_PollEvent(nullptr))
+                        break;
+                }
+            }
+
+            const auto targetFrameRate = 1000.0 / SDL_GetCurrentDisplayMode(SDL_GetDisplayForWindow(m_window))->refresh_rate;
+
+            auto renderTime = SDL_GetTicks() - m_lastStartFrameTime;
+            if (renderTime < targetFrameRate)
+                SDL_Delay(targetFrameRate - renderTime);
+
+            m_lastFrameTime = SDL_GetTicks() - m_lastStartFrameTime;
+            FenestraManager::System::impl::setLastFrameTime(m_lastFrameTime);
         }
 
         // Hide the window as soon as the render loop exits to make the window
