@@ -1,12 +1,27 @@
 #include <stacktrace.hpp>
 #include <fenestra/helpers/fmt.hpp>
 
-#include <array>
+#if __has_include(<cxxabi.h>)
+    #include <cxxabi.h>
+    #define HAVE_CXXABI
+#endif
 
 namespace {
 
     [[maybe_unused]] std::string tryDemangle(const std::string &symbolName) {
-        return symbolName;
+        #if defined(HAVE_CXXABI)
+            int status;
+            const auto demangled = std::unique_ptr<char, void(*)(void*)>(
+                abi::__cxa_demangle(symbolName.c_str(), nullptr, nullptr, &status),
+                std::free
+            );
+
+            std::string demangledName = status == 0 ? demangled.get() : symbolName;
+
+            return demangledName;
+        #else
+            return symbolName;
+        #endif
     }
 
 }
@@ -15,6 +30,7 @@ namespace {
 
     #include <windows.h>
     #include <dbghelp.h>
+    #include <array>
 
     namespace fene::stacktrace {
 
@@ -105,6 +121,7 @@ namespace {
         #include BACKTRACE_HEADER
         #include <fenestra/helpers/utils.hpp>
         #include <dlfcn.h>
+        #include <array>
 
         namespace fene::stacktrace {
 

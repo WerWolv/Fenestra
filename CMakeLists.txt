@@ -30,6 +30,7 @@ add_custom_target(fenestra_all)
 configureCMake()
 addDefines()
 detectOS()
+addBundledLibraries()
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
