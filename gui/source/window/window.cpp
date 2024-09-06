@@ -762,6 +762,8 @@ namespace fene {
         m_windowTitle = FENESTRA_APPLICATION_NAME;
         m_window = SDL_CreateWindow(m_windowTitle.c_str(), 1280_scaled, 720_scaled, flags);
 
+        SDL_SetWindowMinimumSize(m_window, 250_scaled, 150_scaled);
+
         m_glContext = SDL_GL_CreateContext(m_window);
         SDL_GL_MakeCurrent(m_window, m_glContext);
 
