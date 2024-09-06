@@ -401,13 +401,20 @@ namespace fene {
 
                     ImGui::TableHeadersRow();
 
-                    for (const auto &path : paths::Plugins.all()) {
-                        const auto filePath = path / "builtin.hexplug";
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-                        ImGui::TextUnformatted(wolv::util::toUTF8String(filePath).c_str());
-                        ImGui::TableNextColumn();
-                        ImGui::TextUnformatted(wolv::io::fs::exists(filePath) ? "Yes" : "No");
+                    for (const auto &folderPath : paths::Plugins.all()) {
+                        for (const auto &entry : std::fs::directory_iterator(folderPath)) {
+                            const auto &filePath = entry.path();
+                            if (!filePath.has_extension())
+                                continue;
+                            if (filePath.extension() != ".feneplugin" && filePath.extension() != ".fenepluginlib")
+                                continue;
+
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            ImGui::TextUnformatted(wolv::util::toUTF8String(filePath).c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::TextUnformatted(wolv::io::fs::exists(filePath) ? "Yes" : "No");
+                        }
                     }
                     ImGui::EndTable();
                 }
@@ -428,7 +435,6 @@ namespace fene {
                 ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindowRead());
                 ImGui::TextUnformatted("No plugins loaded (including the built-in plugin)!");
                 ImGui::TextUnformatted("Make sure you installed the application correctly.");
-                ImGui::TextUnformatted("There should be at least a 'builtin.hexplug' file in your plugins folder.");
 
                 ImGui::NewLine();
 

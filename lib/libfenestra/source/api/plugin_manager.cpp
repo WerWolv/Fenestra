@@ -277,7 +277,7 @@ namespace fene {
 
         // Load library plugins first
         for (auto &pluginPath : std::fs::directory_iterator(pluginFolder)) {
-            if (pluginPath.is_regular_file() && pluginPath.path().extension() == ".hexpluglib") {
+            if (pluginPath.is_regular_file() && pluginPath.path().extension() == ".fenepluginlib") {
                 if (!isPluginLoaded(pluginPath.path())) {
                     getPluginsMutable().emplace_back(pluginPath.path());
                 }
@@ -286,7 +286,7 @@ namespace fene {
 
         // Load regular plugins afterwards
         for (auto &pluginPath : std::fs::directory_iterator(pluginFolder)) {
-            if (pluginPath.is_regular_file() && pluginPath.path().extension() == ".hexplug") {
+            if (pluginPath.is_regular_file() && pluginPath.path().extension() == ".feneplugin") {
                 if (!isPluginLoaded(pluginPath.path())) {
                     getPluginsMutable().emplace_back(pluginPath.path());
                 }
