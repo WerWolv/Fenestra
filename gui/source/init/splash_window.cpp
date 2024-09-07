@@ -206,12 +206,19 @@ namespace fene::init {
     bool WindowSplash::loop() {
         // Splash window rendering loop
         while (true) {
+            auto startTime = SDL_GetTicks();
             auto frameResult = this->fullFrame();
+            auto endTime = SDL_GetTicks();
 
             if (frameResult == FrameResult::Success)
                 return true;
             else if (frameResult == FrameResult::Failure)
                 return false;
+            else {
+                if (endTime - startTime < 1000) {
+                    SDL_Delay((1000.0F / 60.0F) - (endTime - startTime));
+                }
+            }
         }
     }
 
