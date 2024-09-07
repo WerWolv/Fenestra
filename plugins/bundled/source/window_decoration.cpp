@@ -435,7 +435,6 @@ namespace fene::plugin::bundled {
                     ImGui::SameLine();
                 }
 
-
                 ImGui::EndMenuBar();
             }
             ImGui::PopStyleVar(2);

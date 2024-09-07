@@ -63,7 +63,7 @@ namespace fene {
         std::list<std::string> m_popupsToOpen;
         std::vector<int> m_pressedKeys;
 
-        bool m_unlockFrameRate = false;
+        bool m_unlockFrameRate = true;
 
         ImGuiExt::ImGuiCustomData m_imguiCustomData;
 

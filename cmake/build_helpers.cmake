@@ -498,36 +498,6 @@ function(generatePDBs)
 
 endfunction()
 
-function(generateSDKDirectory)
-    if (WIN32)
-        set(SDK_PATH "./sdk")
-    elseif (APPLE)
-        set(SDK_PATH "${CMAKE_INSTALL_PREFIX}/${BUNDLE_NAME}/Contents/Resources/sdk")
-    else()
-        set(SDK_PATH "share/${FENESTRA_APPLICATION_NAME_LOWER}/sdk")
-    endif()
-
-    set(SDK_BUILD_PATH "${CMAKE_BINARY_DIR}/sdk")
-
-    install(DIRECTORY ${CMAKE_SOURCE_DIR}/lib/libfenestra DESTINATION "${SDK_PATH}/lib" PATTERN "**/source/*" EXCLUDE)
-    install(DIRECTORY ${CMAKE_SOURCE_DIR}/lib/external DESTINATION "${SDK_PATH}/lib")
-    install(DIRECTORY ${CMAKE_SOURCE_DIR}/lib/third_party/imgui DESTINATION "${SDK_PATH}/lib/third_party" PATTERN "**/source/*" EXCLUDE)
-    if (NOT USE_SYSTEM_FMT)
-        install(DIRECTORY ${CMAKE_SOURCE_DIR}/lib/third_party/fmt DESTINATION "${SDK_PATH}/lib/third_party")
-    endif()
-    if (NOT USE_SYSTEM_NLOHMANN_JSON)
-        install(DIRECTORY ${CMAKE_SOURCE_DIR}/lib/third_party/nlohmann_json DESTINATION "${SDK_PATH}/lib/third_party")
-    endif()
-    if (NOT USE_SYSTEM_BOOST)
-        install(DIRECTORY ${CMAKE_SOURCE_DIR}/lib/third_party/boost DESTINATION "${SDK_PATH}/lib/third_party")
-    endif()
-
-    install(DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/modules DESTINATION "${SDK_PATH}/cmake")
-    install(FILES ${CMAKE_SOURCE_DIR}/cmake/build_helpers.cmake DESTINATION "${SDK_PATH}/cmake")
-    install(DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/sdk/ DESTINATION "${SDK_PATH}")
-    install(TARGETS libfenestra ARCHIVE DESTINATION "${SDK_PATH}/lib")
-endfunction()
-
 function(addIncludesFromLibrary target library)
     get_target_property(library_include_dirs ${library} INTERFACE_INCLUDE_DIRECTORIES)
     target_include_directories(${target} PRIVATE ${library_include_dirs})
@@ -587,6 +557,85 @@ function(add_external_library)
 
         if (NOT TARGET ${THIRD_PARTY_LIBRARY_TARGET})
             message(FATAL_ERROR "Could not find target ${THIRD_PARTY_LIBRARY_TARGET}")
+        endif()
+    endif()
+endfunction()
+
+function(createPackage)
+    if (NOT FENESTRA_DEFAULT_INSTALL_TARGETS)
+        return()
+    endif()
+
+    if (WIN32)
+        # Install binaries directly in the prefix, usually C:\Program Files\<Application>.
+        set(CMAKE_INSTALL_BINDIR ".")
+
+        set(PLUGIN_TARGET_FILES "")
+        foreach (plugin IN LISTS PLUGINS)
+            list(APPEND PLUGIN_TARGET_FILES "$<TARGET_FILE:${plugin}>")
+        endforeach ()
+
+        # Grab all dynamically linked dependencies.
+        install(CODE "set(CMAKE_INSTALL_BINDIR \"${CMAKE_INSTALL_BINDIR}\")")
+        install(CODE "set(PLUGIN_TARGET_FILES \"${PLUGIN_TARGET_FILES}\")")
+        install(CODE [[
+            file(GET_RUNTIME_DEPENDENCIES
+                EXECUTABLES ${PLUGIN_TARGET_FILES} $<TARGET_FILE:libfenestra> $<TARGET_FILE:main>
+                RESOLVED_DEPENDENCIES_VAR _r_deps
+                UNRESOLVED_DEPENDENCIES_VAR _u_deps
+                CONFLICTING_DEPENDENCIES_PREFIX _c_deps
+                DIRECTORIES ${DEP_FOLDERS} $ENV{PATH}
+                POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"
+            )
+
+            if(_c_deps_FILENAMES)
+                message(WARNING "Conflicting dependencies for library: \"${_c_deps}\"!")
+            endif()
+
+            foreach(_file ${_r_deps})
+                file(INSTALL
+                    DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}"
+                    TYPE SHARED_LIBRARY
+                    FOLLOW_SYMLINK_CHAIN
+                    FILES "${_file}"
+                    )
+            endforeach()
+        ]])
+    elseif(UNIX AND NOT APPLE)
+        set_target_properties(libfenestra PROPERTIES SOVERSION ${FENESTRA_APPLICATION_VERSION})
+    endif()
+
+    if (APPLE)
+        set(BUNDLE_PATH "${CMAKE_INSTALL_PREFIX}/${FENESTRA_APPLICATION_NAME}.app")
+
+        set_target_properties(libfenestra PROPERTIES SOVERSION ${FENESTRA_APPLICATION_VERSION})
+
+        set_property(TARGET main PROPERTY MACOSX_BUNDLE_INFO_PLIST ${MACOSX_BUNDLE_INFO_PLIST})
+
+        install(TARGETS main BUNDLE DESTINATION ".")
+
+        install(TARGETS ${PLUGINS} LIBRARY DESTINATION "$<TARGET_FILE_DIR:main>/plugins")
+        install(CODE "set(CMAKE_INSTALL_PREFIX \"${CMAKE_INSTALL_PREFIX}\")")
+        install(CODE "set(FENESTRA_APPLICATION_NAME \"${FENESTRA_APPLICATION_NAME}\")")
+        install(CODE "set(BUNDLE_PATH \"${BUNDLE_PATH}\")")
+        install(CODE [[
+            include(BundleUtilities)
+
+            set(PLUGINS_PATH "${BUNDLE_PATH}/Contents/MacOS/plugins")
+            copy_and_fixup_bundle("${CMAKE_CURRENT_BINARY_DIR}/${FENESTRA_APPLICATION_NAME}.app" "${BUNDLE_PATH}" "${PLUGINS_FILES}" "${PLUGINS_PATH}")
+        ]])
+
+        find_program(CODESIGN_PATH codesign)
+        if (CODESIGN_PATH)
+            install(CODE "message(STATUS \"Signing bundle '${CMAKE_INSTALL_PREFIX}/${BUNDLE_NAME}'...\")")
+            install(CODE "execute_process(COMMAND ${CODESIGN_PATH} --force --deep --sign - ${BUNDLE_PATH} COMMAND_ERROR_IS_FATAL ANY)")
+        endif()
+
+        install(CODE [[ message(STATUS "MacOS Bundle finalized. DO NOT TOUCH IT ANYMORE! ANY MODIFICATIONS WILL BREAK IT FROM NOW ON!") ]])
+    else()
+        install(TARGETS main RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+        if (TARGET main-forwarder)
+            install(TARGETS main-forwarder BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR})
         endif()
     endif()
 endfunction()

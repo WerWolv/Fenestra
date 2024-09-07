@@ -32,6 +32,16 @@ target_include_directories(main PUBLIC include)
 
 add_dependencies(fenestra_all main)
 
+if (WIN32)
+    set(FENESTRA_APPLICATION_NAME "${FENESTRA_APPLICATION_NAME_LOWER}-gui")
+else ()
+    set(FENESTRA_APPLICATION_NAME "${FENESTRA_APPLICATION_NAME_LOWER}")
+endif ()
+
+if (APPLE)
+    set_target_properties(main PROPERTIES MACOSX_BUNDLE TRUE)
+endif ()
+
 if (EMSCRIPTEN)
     target_link_options(main PRIVATE -sGL_ENABLE_GET_PROC_ADDRESS)
     target_link_options(main PRIVATE -sUSE_PTHREADS=1 -sALLOW_MEMORY_GROWTH=1)
@@ -45,12 +55,6 @@ if (EMSCRIPTEN)
     target_link_options(main PRIVATE -fsanitize=null)
     target_link_options(main PRIVATE -fsanitize-minimal-runtime)
     target_link_libraries(main PRIVATE idbfs.js)
-endif ()
-
-if (WIN32)
-    set(FENESTRA_APPLICATION_NAME "${FENESTRA_APPLICATION_NAME_LOWER}-gui")
-else ()
-    set(FENESTRA_APPLICATION_NAME "${FENESTRA_APPLICATION_NAME_LOWER}")
 endif ()
 
 set_target_properties(main PROPERTIES
