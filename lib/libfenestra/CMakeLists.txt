@@ -77,7 +77,7 @@ elseif (APPLE)
     find_library(FOUNDATION NAMES Foundation)
     target_link_libraries(libfenestra PUBLIC ${FOUNDATION})
 elseif (UNIX)
-    target_include_directories(libfenestra PUBLIC ${XDGPP_INCLUDE_DIRS})
+    target_link_libraries(libfenestra PUBLIC xdgpp)
 endif ()
 
 target_compile_definitions(libfenestra PRIVATE FENESTRA_PROJECT_NAME="${PROJECT_NAME}")
