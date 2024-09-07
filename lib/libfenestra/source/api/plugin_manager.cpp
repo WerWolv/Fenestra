@@ -261,70 +261,86 @@ namespace fene {
 
 
     bool PluginManager::load() {
-        bool success = true;
-        for (const auto &loadPath : getPluginLoadPaths())
-            success = PluginManager::load(loadPath) && success;
+        #if defined(FENESTRA_STATIC_LINK_PLUGINS)
+            return true;
+        #else
+            bool success = true;
+            for (const auto &loadPath : getPluginLoadPaths())
+                success = PluginManager::load(loadPath) && success;
 
-        return success;
+            return success;
+        #endif
     }
 
 
     bool PluginManager::load(const std::fs::path &pluginFolder) {
-        if (!wolv::io::fs::exists(pluginFolder))
-            return false;
+        #if defined(FENESTRA_STATIC_LINK_PLUGINS)
+            return true;
+        #else
+            if (!wolv::io::fs::exists(pluginFolder))
+                return false;
 
-        s_pluginPaths->push_back(pluginFolder);
+            s_pluginPaths->push_back(pluginFolder);
 
-        // Load library plugins first
-        for (auto &pluginPath : std::fs::directory_iterator(pluginFolder)) {
-            if (pluginPath.is_regular_file() && pluginPath.path().extension() == ".fenepluginlib") {
-                if (!isPluginLoaded(pluginPath.path())) {
-                    getPluginsMutable().emplace_back(pluginPath.path());
+            // Load library plugins first
+            for (auto &pluginPath : std::fs::directory_iterator(pluginFolder)) {
+                if (pluginPath.is_regular_file() && pluginPath.path().extension() == ".fenepluginlib") {
+                    if (!isPluginLoaded(pluginPath.path())) {
+                        getPluginsMutable().emplace_back(pluginPath.path());
+                    }
                 }
             }
-        }
 
-        // Load regular plugins afterwards
-        for (auto &pluginPath : std::fs::directory_iterator(pluginFolder)) {
-            if (pluginPath.is_regular_file() && pluginPath.path().extension() == ".feneplugin") {
-                if (!isPluginLoaded(pluginPath.path())) {
-                    getPluginsMutable().emplace_back(pluginPath.path());
+            // Load regular plugins afterwards
+            for (auto &pluginPath : std::fs::directory_iterator(pluginFolder)) {
+                if (pluginPath.is_regular_file() && pluginPath.path().extension() == ".feneplugin") {
+                    if (!isPluginLoaded(pluginPath.path())) {
+                        getPluginsMutable().emplace_back(pluginPath.path());
+                    }
                 }
             }
-        }
 
-        std::erase_if(getPluginsMutable(), [](const Plugin &plugin) {
-            return !plugin.isValid();
-        });
+            std::erase_if(getPluginsMutable(), [](const Plugin &plugin) {
+                return !plugin.isValid();
+            });
 
-        return true;
+            return true;
+        #endif
     }
 
     AutoReset<std::vector<uintptr_t>> PluginManager::s_loadedLibraries;
 
     bool PluginManager::loadLibraries() {
-        bool success = true;
-        for (const auto &loadPath : paths::Libraries.read())
-            success = PluginManager::loadLibraries(loadPath) && success;
+        #if defined(FENESTRA_STATIC_LINK_PLUGINS)
+            return true;
+        #else
+            bool success = true;
+            for (const auto &loadPath : paths::Libraries.read())
+                success = PluginManager::loadLibraries(loadPath) && success;
 
-        return success;
+            return success;
+        #endif
     }
 
     bool PluginManager::loadLibraries(const std::fs::path& libraryFolder) {
-        bool success = true;
-        for (const auto &entry : std::fs::directory_iterator(libraryFolder)) {
-            if (!(entry.path().extension() == ".dll" || entry.path().extension() == ".so" || entry.path().extension() == ".dylib"))
-                continue;
+        #if defined(FENESTRA_STATIC_LINK_PLUGINS)
+            return true;
+        #else
+            bool success = true;
+            for (const auto &entry : std::fs::directory_iterator(libraryFolder)) {
+                if (!(entry.path().extension() == ".dll" || entry.path().extension() == ".so" || entry.path().extension() == ".dylib"))
+                    continue;
 
-            auto handle = loadLibrary(entry);
-            if (handle == 0) {
-                success = false;
+                auto handle = loadLibrary(entry);
+                if (handle == 0) {
+                    success = false;
+                }
+
+                PluginManager::s_loadedLibraries->push_back(handle);
             }
 
-            PluginManager::s_loadedLibraries->push_back(handle);
-        }
-
-        return success;
+            return success;
+        #endif
     }
 
 

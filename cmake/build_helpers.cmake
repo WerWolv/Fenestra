@@ -368,10 +368,8 @@ macro(setupCompilerFlags target)
         if (FENESTRA_ENABLE_UNITY_BUILD AND WIN32)
             set(FENESTRA_COMMON_FLAGS "${FENESTRA_COMMON_FLAGS} -Wa,-mbig-obj")
         endif ()
-    endif()
 
-    # Disable some warnings for gcc
-    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        # Disable some warnings for gcc
         set(FENESTRA_C_CXX_FLAGS "${FENESTRA_C_CXX_FLAGS} -Wno-restrict -Wno-stringop-overread -Wno-stringop-overflow -Wno-dangling-reference")
     endif()
 

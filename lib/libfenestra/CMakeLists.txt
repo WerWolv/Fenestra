@@ -2,7 +2,13 @@ project(libfenestra)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_library(libfenestra SHARED
+if (FENESTRA_STATIC_LINK_PLUGINS)
+    set(LIBFENESTRA_LIBRARY_TYPE STATIC)
+else()
+    set(LIBFENESTRA_LIBRARY_TYPE SHARED)
+endif()
+
+add_library(libfenestra ${LIBFENESTRA_LIBRARY_TYPE}
         source/api/fenestra_manager.cpp
         source/api/event_manager.cpp
         source/api/localization_manager.cpp
@@ -28,7 +34,6 @@ add_library(libfenestra SHARED
         source/ui/popup.cpp
         source/ui/toast.cpp
         source/ui/view.cpp
-
 )
 
 if (DEFINED FENESTRA_COMMIT_HASH_LONG AND DEFINED FENESTRA_COMMIT_BRANCH)
