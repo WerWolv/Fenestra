@@ -39,7 +39,7 @@ namespace fene {
         auto fileName = name;
         fileName = wolv::util::replaceStrings(fileName, " ", "_");
         std::ranges::transform(fileName, fileName.begin(), tolower);
-        fileName += ".hexlyt";
+        fileName += ".fenelyt";
 
         std::fs::path layoutPath;
         for (const auto &path : paths::Layouts.write()) {
@@ -112,7 +112,7 @@ namespace fene {
             for (const auto &entry : std::fs::directory_iterator(directory)) {
                 const auto &path = entry.path();
 
-                if (path.extension() != ".hexlyt")
+                if (path.extension() != ".fenelyt")
                     continue;
 
                 auto name = path.stem().string();

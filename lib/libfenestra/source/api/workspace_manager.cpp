@@ -3,6 +3,7 @@
 
 #include <fenestra/helpers/logger.hpp>
 #include <fenestra/helpers/auto_reset.hpp>
+#include <fenestra/helpers/default_paths.hpp>
 
 #include <wolv/io/file.hpp>
 
@@ -25,16 +26,13 @@ namespace fene {
             .builtin = false
         }).first;
 
-        // TODO: Fix paths
-        /*
         for (const auto &workspaceFolder : paths::Workspaces.write()) {
-            const auto workspacePath = workspaceFolder / (name + ".hexws");
+            const auto workspacePath = workspaceFolder / (name + ".fenews");
             if (exportToFile(workspacePath)) {
                 s_currentWorkspace->second.path = workspacePath;
                 break;
             }
         }
-        */
     }
 
     void WorkspaceManager::switchWorkspace(const std::string& name) {
@@ -160,21 +158,20 @@ namespace fene {
     void WorkspaceManager::reload() {
         WorkspaceManager::reset();
 
-        // TODO: Fix paths
-        /*for (const auto &defaultPath : paths::Workspaces.read()) {
+        for (const auto &defaultPath : paths::Workspaces.read()) {
             for (const auto &entry : std::fs::directory_iterator(defaultPath)) {
                 if (!entry.is_regular_file()) {
                     continue;
                 }
 
                 const auto &path = entry.path();
-                if (path.extension() != ".hexws") {
+                if (path.extension() != ".fenews") {
                     continue;
                 }
 
                 WorkspaceManager::importFromFile(path);
             }
-        }*/
+        }
     }
 
 
