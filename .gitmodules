@@ -16,6 +16,6 @@
 [submodule "lib/third_party/SDL"]
 	path = lib/third_party/SDL
 	url = https://github.com/libsdl-org/SDL
-[submodule "lib/third_party/xdgpp"]
-	path = lib/third_party/xdgpp
+[submodule "lib/third_party/xdgpp/xdgpp"]
+	path = lib/third_party/xdgpp/xdgpp
 	url = https://github.com/WerWolv/xdgpp
