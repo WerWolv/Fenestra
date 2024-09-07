@@ -1,15 +1,15 @@
 project(third_party)
 
 set(MESSAGES_SUPPRESSED ON)
-add_subdirectory(imgui EXCLUDE_FROM_ALL)
-add_subdirectory(jthread EXCLUDE_FROM_ALL)
-add_subdirectory(nlohmann_json EXCLUDE_FROM_ALL)
 set(BUILD_SHARED_LIBS OFF)
-add_subdirectory(fmt EXCLUDE_FROM_ALL)
-add_subdirectory(lunasvg EXCLUDE_FROM_ALL)
-add_subdirectory(SDL EXCLUDE_FROM_ALL)
-set(XDGPP_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/xdgpp" PARENT_SCOPE)
-set(MESSAGES_SUPPRESSED OFF)
+
+add_external_library(NAME imgui TARGET imgui_all NO_SYSTEM)
+add_external_library(NAME jthread TARGET jthread)
+add_external_library(NAME nlohmann_json TARGET nlohmann_json)
+add_external_library(NAME xdgpp TARGET xdgpp)
+add_external_library(NAME fmt TARGET fmt::fmt)
+add_external_library(NAME lunasvg TARGET lunasvg)
+add_external_library(NAME SDL TARGET SDL3-static)
 
 target_compile_definitions(lunasvg PUBLIC LUNASVG_BUILD_STATIC)
 target_compile_options(SDL3-static PRIVATE "-Wno-deprecated-declarations")

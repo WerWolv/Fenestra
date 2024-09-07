@@ -549,3 +549,46 @@ function(precompileHeaders target includeFolder)
             "$<$<COMPILE_LANGUAGE:CXX>:${INCLUDES}>"
     )
 endfunction()
+
+function(add_external_library)
+    set(options NO_SYSTEM)
+    set(oneValueArgs NAME TARGET)
+    set(multiValueArgs)
+    cmake_parse_arguments(THIRD_PARTY_LIBRARY "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    string(TOUPPER ${THIRD_PARTY_LIBRARY_NAME} THIRD_PARTY_LIBRARY_NAME_UPPER)
+
+    if (FENESTRA_USE_SYSTEM_${THIRD_PARTY_LIBRARY_NAME_UPPER})
+        if (THIRD_PARTY_LIBRARY_NO_SYSTEM)
+            message(FATAL_ERROR "Requested use of system library '${THIRD_PARTY_LIBRARY_NAME}' but this is not possible with this library.\nThis is most likely because the library is custom, tightly integrated with Fenestra or modified.\nIf you're a Linux package maintainer, please don't try to circumvent this, it was done on purpose.")
+        endif()
+
+        if (DEFINED ${THIRD_PARTY_LIBRARY_NAME_UPPER}_PACKAGE_NAME)
+            find_package(${${THIRD_PARTY_LIBRARY_NAME_UPPER}_PACKAGE_NAME} REQUIRED)
+        else()
+            if (NOT DEFINED FENESTRA_${THIRD_PARTY_LIBRARY_NAME_UPPER}_INCLUDE_DIRS)
+                message(FATAL_ERROR "Use of system library '${THIRD_PARTY_LIBRARY_NAME}' was requested but FENESTRA_${THIRD_PARTY_LIBRARY_NAME_UPPER}_INCLUDE_DIRS was not defined")
+            endif()
+
+            if (NOT DEFINED FENESTRA_${THIRD_PARTY_LIBRARY_NAME_UPPER}_LIBRARY_DIRS)
+                message(FATAL_ERROR "Use of system library '${THIRD_PARTY_LIBRARY_NAME}' was requested but FENESTRA_${THIRD_PARTY_LIBRARY_NAME_UPPER}_LIBRARY_DIRS was not defined")
+            endif()
+
+            if (NOT DEFINED FENESTRA_${THIRD_PARTY_LIBRARY_NAME_UPPER}_LIBRARIES)
+                message(FATAL_ERROR "Use of system library '${THIRD_PARTY_LIBRARY_NAME}' was requested but FENESTRA_${THIRD_PARTY_LIBRARY_NAME_UPPER}_LIBRARIES was not defined")
+            endif()
+        endif()
+
+        add_library(external_library_${THIRD_PARTY_LIBRARY_NAME} INTERFACE)
+        add_library(${THIRD_PARTY_LIBRARY_TARGET} ALIAS external_library_${THIRD_PARTY_LIBRARY_NAME})
+        target_include_directories(external_library_${THIRD_PARTY_LIBRARY_NAME} INTERFACE ${FENESTRA_${THIRD_PARTY_LIBRARY_NAME_UPPER}_INCLUDE_DIRS})
+        target_link_directories(external_library_${THIRD_PARTY_LIBRARY_NAME} INTERFACE ${FENESTRA_${THIRD_PARTY_LIBRARY_NAME_UPPER}_LIBRARY_DIRS})
+        target_link_libraries(external_library_${THIRD_PARTY_LIBRARY_NAME} INTERFACE ${FENESTRA_${THIRD_PARTY_LIBRARY_NAME_UPPER}_LIBRARIES})
+    else()
+        add_subdirectory(${THIRD_PARTY_LIBRARY_NAME} EXCLUDE_FROM_ALL)
+
+        if (NOT TARGET ${THIRD_PARTY_LIBRARY_TARGET})
+            message(FATAL_ERROR "Could not find target ${THIRD_PARTY_LIBRARY_TARGET}")
+        endif()
+    endif()
+endfunction()

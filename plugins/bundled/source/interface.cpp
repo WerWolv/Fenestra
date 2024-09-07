@@ -10,4 +10,9 @@ namespace fene::plugin::bundled {
 
 FENESTRA_PLUGIN_SETUP("Bundled", "Fenestra", "Integrated Fenestra functionality") {
     fene::plugin::bundled::addWindowDecoration();
+
+    EventFrameBegin::subscribe([] {
+        ImGui::ShowDemoWindow();
+    });
+
 }
