@@ -253,6 +253,11 @@ namespace fene {
              */
             void addStartupTask(const std::string &name, bool async, const std::function<bool()> &function);
 
+            void addClipboardString(std::string_view string);
+            void addClipboardStringCallback(const std::function<std::string()> &callback);
+            void addClipboardData(std::span<const u8> data, const std::string &mimeType = "application/octet-stream");
+            void addClipboardDataCallback(const std::function<std::vector<u8>()> &callback, const std::string &mimeType = "application/octet-stream");
+
         }
 
         /**
@@ -349,7 +354,6 @@ namespace fene {
             ImFontAtlas* getFontAtlas();
 
             bool shouldLoadAllUnicodeCharacters();
-            bool shouldUsePixelPerfectDefaultFont();
 
         }
 

@@ -7,6 +7,7 @@
 #include <imgui_internal.h>
 #include <fenestra/events/fenestra_events.hpp>
 #include <fenestra/events/system_events.hpp>
+#include <SDL3/SDL_clipboard.h>
 
 #include <wolv/utils/string.hpp>
 
@@ -374,6 +375,66 @@ namespace fene::FenestraManager {
             return getApplicationVersion(false).ends_with("WIP");
         }
 
+
+        void addClipboardString(std::string_view string) {
+            addClipboardData({ reinterpret_cast<const u8*>(string.data()), string.size() }, "text/plain;charset=utf-8");
+        }
+
+        void addClipboardStringCallback(const std::function<std::string()> &callback) {
+            addClipboardDataCallback([callback]() -> std::vector<u8> {
+                auto data = callback();
+                return { data.begin(), data.end() };
+            }, "text/plain;charset=utf-8");
+        }
+
+        void addClipboardData(std::span<const u8> data, const std::string &mimeType) {
+            std::array mimeTypes = { mimeType.c_str() };
+
+            struct Storage {
+                std::vector<u8> data;
+            };
+
+            const auto storage = new Storage;
+            storage->data.assign(data.begin(), data.end());
+
+            SDL_SetClipboardData(
+                [](void *userData, const char *, size_t *size) -> const void * {
+                    auto storage = static_cast<Storage*>(userData);
+                    *size = storage->data.size();
+                    return storage->data.data();
+                },
+                [](void *userData) -> void { delete static_cast<Storage*>(userData); },
+                storage,
+                mimeTypes.data(),
+                mimeTypes.size()
+            );
+        }
+
+        void addClipboardDataCallback(const std::function<std::vector<u8>()> &callback, const std::string &mimeType) {
+            std::array mimeTypes = { mimeType.c_str() };
+
+            struct Storage {
+                std::function<std::vector<u8>()> function;
+                std::vector<u8> data;
+            };
+            const auto storage = new Storage { callback, {} };
+
+            SDL_SetClipboardData(
+                [](void *userData, const char *, size_t *size) -> const void * {
+                    auto storage = static_cast<Storage*>(userData);
+
+                    storage->data = storage->function();
+
+                    *size = storage->data.size();
+                    return storage->data.data();
+                },
+                [](void *userData) -> void { delete static_cast<Storage*>(userData); },
+                storage,
+                mimeTypes.data(),
+                mimeTypes.size()
+            );
+        }
+
     }
 
     namespace Messaging {
@@ -548,7 +609,6 @@ namespace fene::FenestraManager {
         bool shouldLoadAllUnicodeCharacters() {
             return impl::s_shouldLoadAllUnicodeCharacters;
         }
-
 
     }
 
