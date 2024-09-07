@@ -1178,7 +1178,7 @@ namespace ImGuiExt {
 
         bool result = false;
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0F);
-        if (ImGui::BeginChild(fmt::format("{}##SubWindow", label).c_str(), size, ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY | flags, hasMenuBar ? ImGuiWindowFlags_MenuBar : ImGuiWindowFlags_None)) {
+        if (ImGui::BeginChild(fmt::format("{}##SubWindow", label).c_str(), size, ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY | flags, hasMenuBar ? ImGuiWindowFlags_MenuBar : ImGuiWindowFlags_None)) {
             result = true;
 
             if (hasMenuBar && ImGui::BeginMenuBar()) {

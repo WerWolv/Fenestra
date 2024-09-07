@@ -4598,10 +4598,6 @@ CIMGUI_API bool igIsAliasKey(ImGuiKey key)
 {
     return ImGui::IsAliasKey(key);
 }
-CIMGUI_API bool igIsModKey(ImGuiKey key)
-{
-    return ImGui::IsModKey(key);
-}
 CIMGUI_API ImGuiKeyChord igFixupKeyChord(ImGuiKeyChord key_chord)
 {
     return ImGui::FixupKeyChord(key_chord);
@@ -5161,10 +5157,6 @@ CIMGUI_API const char* igTableGetColumnName_TablePtr(const ImGuiTable* table,int
 CIMGUI_API ImGuiID igTableGetColumnResizeID(ImGuiTable* table,int column_n,int instance_no)
 {
     return ImGui::TableGetColumnResizeID(table,column_n,instance_no);
-}
-CIMGUI_API float igTableGetMaxColumnWidth(const ImGuiTable* table,int column_n)
-{
-    return ImGui::TableGetMaxColumnWidth(table,column_n);
 }
 CIMGUI_API void igTableSetColumnWidthAutoSingle(ImGuiTable* table,int column_n)
 {
