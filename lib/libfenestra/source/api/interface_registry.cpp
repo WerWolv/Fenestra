@@ -28,11 +28,6 @@ namespace fene::InterfaceRegistry {
             return *s_menuItems;
         }
 
-        static AutoReset<std::vector<DrawCallback>> s_welcomeScreenEntries;
-        const std::vector<DrawCallback>& getWelcomeScreenEntries() {
-            return *s_welcomeScreenEntries;
-        }
-
         static AutoReset<std::vector<DrawCallback>> s_footerItems;
         const std::vector<DrawCallback>& getFooterItems() {
             return *s_footerItems;
@@ -75,6 +70,19 @@ namespace fene::InterfaceRegistry {
         static AutoReset<std::unique_ptr<SplashScreen>> s_splashScreen;
         const std::unique_ptr<SplashScreen>& getSplashScreen() {
             return s_splashScreen;
+        }
+
+        void setSplashScreen(std::unique_ptr<SplashScreen> &&splashScreen) {
+            s_splashScreen = std::move(splashScreen);
+        }
+
+        static AutoReset<std::unique_ptr<WelcomeScreen>> s_welcomeScreen;
+        const std::unique_ptr<WelcomeScreen>& getWelcomeScreen() {
+            return s_welcomeScreen;
+        }
+
+        void setWelcomeScreen(std::unique_ptr<WelcomeScreen> &&welcomeScreen) {
+            s_welcomeScreen = std::move(welcomeScreen);
         }
 
     }
@@ -148,10 +156,6 @@ namespace fene::InterfaceRegistry {
         });
     }
 
-    void addWelcomeScreenEntry(const impl::DrawCallback &function) {
-        impl::s_welcomeScreenEntries->push_back(function);
-    }
-
     void addFooterItem(const impl::DrawCallback &function) {
         impl::s_footerItems->push_back(function);
     }
@@ -214,10 +218,6 @@ namespace fene::InterfaceRegistry {
             return views[unlocalizedName].get();
         else
             return nullptr;
-    }
-
-    void setSplashScreen(std::unique_ptr<SplashScreen> &&splashScreen) {
-        impl::s_splashScreen = std::move(splashScreen);
     }
 
 }

@@ -451,6 +451,40 @@ namespace fene::plugin::bundled {
             }
         }
 
+        void drawWelcomeScreen(const std::unique_ptr<InterfaceRegistry::WelcomeScreen> &welcomeScreen) {
+            ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0);
+            ImGui::PushStyleColor(ImGuiCol_WindowShadow, 0x00);
+            if (ImGui::Begin("FenestraDockSpace", nullptr, ImGuiWindowFlags_NoBringToFrontOnFocus)) {
+                static auto title = []{
+                    std::array<char, 256> title = {};
+                    ImFormatString(title.data(), title.size(), "%s/DockSpace_%08X", ImGui::GetCurrentWindowRead()->Name, ImGui::GetID("FenestraMainDock"));
+                    return title;
+                }();
+
+                if (ImGui::Begin(title.data(), nullptr, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus)) {
+                    ImGui::Dummy({});
+                    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, scaled({ 10, 10 }));
+
+                    ImGui::SetNextWindowScroll({ 0.0F, -1.0F });
+                    ImGui::SetNextWindowSize(ImGui::GetContentRegionAvail() + scaled({ 2_scaled, 10 }));
+                    ImGui::SetNextWindowPos(ImGui::GetCursorScreenPos() - ImVec2(1_scaled, ImGui::GetStyle().FramePadding.y + 2_scaled));
+                    ImGui::SetNextWindowViewport(ImGui::GetMainViewport()->ID);
+                    if (ImGui::Begin("Welcome Screen", nullptr, ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+                        ImGui::BringWindowToDisplayBack(ImGui::GetCurrentWindowRead());
+
+                        welcomeScreen->draw();
+                    }
+                    ImGui::End();
+                    ImGui::PopStyleVar();
+                }
+                ImGui::End();
+                ImGui::BringWindowToDisplayBack(ImGui::GetCurrentWindowRead());
+            }
+            ImGui::End();
+            ImGui::PopStyleColor();
+            ImGui::PopStyleVar();
+        }
+
     }
 
     void addWindowDecoration() {
@@ -510,6 +544,9 @@ namespace fene::plugin::bundled {
             ImGui::End();
 
             ImGui::PopStyleVar(2);
+
+            if (const auto &welcomeScreen = InterfaceRegistry::impl::getWelcomeScreen(); welcomeScreen != nullptr)
+                drawWelcomeScreen(welcomeScreen);
 
             // Draw main menu popups
             for (auto &[priority, menuItem] : InterfaceRegistry::impl::getMenuItems()) {

@@ -15,6 +15,10 @@ namespace fene {
     }
 
     bool View::shouldProcess() const {
+        const auto &welcomeScreen = InterfaceRegistry::impl::getWelcomeScreen();
+        if (welcomeScreen != nullptr && !welcomeScreen->isVisible())
+            return false;
+
         return this->shouldDraw();
     }
 

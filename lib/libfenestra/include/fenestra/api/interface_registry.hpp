@@ -37,6 +37,14 @@ namespace fene {
             ImVec2 m_size;
         };
 
+        class WelcomeScreen {
+        public:
+            virtual ~WelcomeScreen() = default;
+
+            virtual void draw() = 0;
+            virtual bool isVisible() = 0;
+        };
+
         namespace impl {
 
             using DrawCallback      = std::function<void()>;
@@ -81,7 +89,6 @@ namespace fene {
             const std::vector<MenuItem*>& getToolbarMenuItems();
             std::multimap<u32, MenuItem>& getMenuItemsMutable();
 
-            const std::vector<DrawCallback>& getWelcomeScreenEntries();
             const std::vector<DrawCallback>& getFooterItems();
             const std::vector<DrawCallback>& getToolbarItems();
             const std::vector<SidebarItem>& getSidebarItems();
@@ -96,7 +103,11 @@ namespace fene {
             const std::map<UnlocalizedString, ViewCreator>& getViewCreators();
             const std::list<std::unique_ptr<View>>& getOpenViews();
 
+            void setSplashScreen(std::unique_ptr<SplashScreen> &&splashScreen);
             const std::unique_ptr<SplashScreen>& getSplashScreen();
+
+            void setWelcomeScreen(std::unique_ptr<WelcomeScreen> &&welcomeScreen);
+            const std::unique_ptr<WelcomeScreen>& getWelcomeScreen();
 
         }
 
@@ -241,13 +252,6 @@ namespace fene {
          */
         void addMenuItemSeparator(std::vector<UnlocalizedString> unlocalizedMainMenuNames, u32 priority);
 
-
-        /**
-         * @brief Adds a new welcome screen entry
-         * @param function The function to call to draw the entry
-         */
-        void addWelcomeScreenEntry(const impl::DrawCallback &function);
-
         /**
          * @brief Adds a new footer item
          * @param function The function to call to draw the item
@@ -296,11 +300,14 @@ namespace fene {
             const impl::ClickCallback &function
         );
 
-        void setSplashScreen(std::unique_ptr<SplashScreen> &&splashScreen);
-
         template<std::derived_from<SplashScreen> T>
         void setSplashScreen(auto && ... args) {
-            setSplashScreen(std::make_unique<T>(std::forward<decltype(args)>(args)...));
+            impl::setSplashScreen(std::make_unique<T>(std::forward<decltype(args)>(args)...));
+        }
+
+        template<std::derived_from<WelcomeScreen> T>
+        void setWelcomeScreen(auto && ... args) {
+            impl::setWelcomeScreen(std::make_unique<T>(std::forward<decltype(args)>(args)...));
         }
 
     }
