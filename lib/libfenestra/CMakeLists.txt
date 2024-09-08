@@ -94,6 +94,7 @@ target_link_libraries(libfenestra PUBLIC
         fmt::fmt
         imgui_imgui imgui_imnodes imgui_implot imgui_color_text_editor imgui_cimgui imgui_custom
         lunasvg
+        trace
 )
 
 set_target_properties(libfenestra PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})

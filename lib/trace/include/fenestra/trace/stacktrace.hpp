@@ -1,25 +1,23 @@
 #pragma once
 
-#include <fenestra.hpp>
-
 #include <string>
 #include <vector>
 
-namespace fene::stacktrace {
+namespace fene::trace {
 
     struct StackFrame {
         std::string file;
         std::string function;
-        u32 line;
+        std::uint32_t line;
     };
 
     void initialize();
 
-    struct StackTraceResult {
+    struct StackTrace {
         std::vector<StackFrame> stackFrames;
         std::string implementationName;
     };
 
-    StackTraceResult getStackTrace(); 
+    StackTrace getStackTrace();
 
 }

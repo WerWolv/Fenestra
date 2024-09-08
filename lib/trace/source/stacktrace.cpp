@@ -1,5 +1,4 @@
-#include <stacktrace.hpp>
-#include <fenestra/helpers/fmt.hpp>
+#include <fenestra/trace/stacktrace.hpp>
 
 #if __has_include(<cxxabi.h>)
     #include <cxxabi.h>
@@ -32,13 +31,13 @@ namespace {
     #include <dbghelp.h>
     #include <array>
 
-    namespace fene::stacktrace {
+    namespace fene::trace {
 
         void initialize() {
 
         }
 
-        StackTraceResult getStackTrace() {
+        StackTrace getStackTrace() {
             std::vector<StackFrame> stackTrace;
 
             HANDLE process = GetCurrentProcess();
@@ -109,7 +108,7 @@ namespace {
 
             SymCleanup(process);
 
-            return StackTraceResult{ stackTrace, "StackWalk" };
+            return StackTrace{ stackTrace, "StackWalk" };
         }
 
     }
@@ -119,17 +118,17 @@ namespace {
     #if __has_include(BACKTRACE_HEADER)
 
         #include BACKTRACE_HEADER
-        #include <fenestra/helpers/utils.hpp>
         #include <dlfcn.h>
         #include <array>
+        #include <filesystem>
 
-        namespace fene::stacktrace {
+        namespace fene::trace {
 
             void initialize() {
 
             }
 
-            StackTraceResult getStackTrace() {
+            StackTrace getStackTrace() {
                 static std::vector<StackFrame> result;
 
                 std::array<void*, 128> addresses = {};
@@ -139,13 +138,13 @@ namespace {
                 for (size_t i = 0; i < count; i += 1) {
                     dladdr(addresses[i], &info);
 
-                    auto fileName = info.dli_fname != nullptr ? std::fs::path(info.dli_fname).filename().string() : "??";
+                    auto fileName = info.dli_fname != nullptr ? std::filesystem::path(info.dli_fname).filename().string() : "??";
                     auto demangledName = info.dli_sname != nullptr ? tryDemangle(info.dli_sname) : "??";
 
                     result.push_back(StackFrame { std::move(fileName), std::move(demangledName), 0 });
                 }
 
-                return StackTraceResult{ result, "execinfo" };
+                return StackTrace{ result, "execinfo" };
             }
 
         }
@@ -157,10 +156,9 @@ namespace {
     #if __has_include(BACKTRACE_HEADER)
 
         #include BACKTRACE_HEADER
-        #include <fenestra/helpers/logger.hpp>
-        #include <fenestra/helpers/utils.hpp>
+        #include <wolv/io/fs.hpp>
 
-        namespace fene::stacktrace {
+        namespace fene::trace {
 
             static struct backtrace_state *s_backtraceState;
 
@@ -172,7 +170,7 @@ namespace {
                 }
             }
 
-            StackTraceResult getStackTrace() {
+            StackTrace getStackTrace() {
                 static std::vector<StackFrame> result;
 
                 result.clear();
@@ -190,7 +188,7 @@ namespace {
 
                 }
 
-                return StackTraceResult{ result, "backtrace" };
+                return StackTrace{ result, "backtrace" };
             }
 
         }
@@ -199,15 +197,15 @@ namespace {
 
 #else
 
-    namespace fene::stacktrace {
+    namespace fene::trace {
 
         void initialize() { }
-        StackTraceResult getStackTrace() {
-            return StackTraceResult {
+        StackTrace getStackTrace() {
+            return StackTrace {
                 {StackFrame { "??", "Stacktrace collecting not available!", 0 }},
                 "none"
             };
         }
     }
-    
+
 #endif
