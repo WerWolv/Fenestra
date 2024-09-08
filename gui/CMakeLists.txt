@@ -5,18 +5,17 @@ set(CMAKE_CXX_STANDARD 23)
 add_executable(main ${APPLICATION_TYPE}
     source/main.cpp
     source/crash_handlers.cpp
-    source/stacktrace.cpp
 
     source/window/window.cpp
-    source/window/win_window.cpp
-    source/window/macos_window.cpp
-    source/window/linux_window.cpp
-    source/window/web_window.cpp
+    source/window/impl/windows.cpp
+    source/window/impl/macos.cpp
+    source/window/impl/linux.cpp
+    source/window/impl/web.cpp
 
     source/messaging/common.cpp
     source/messaging/linux.cpp
     source/messaging/macos.cpp
-    source/messaging/win.cpp
+    source/messaging/windows.cpp
     source/messaging/web.cpp
 
     source/init/splash_window.cpp

@@ -487,10 +487,6 @@ namespace fene {
             constexpr DWMNCRENDERINGPOLICY value = DWMNCRP_ENABLED;
             DwmSetWindowAttribute(hwnd, DWMWA_NCRENDERING_POLICY, &value, sizeof(value));
         }
-    }
-
-    void Window::beginNativeWindowFrame() {
-        s_titleBarHeight = ImGui::GetCurrentWindowRead()->MenuBarHeight;
 
         // Remove WS_POPUP style from the window to make various window management tools work
         auto hwnd = static_cast<HWND>(SDL_GetPointerProperty(SDL_GetWindowProperties(m_window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr));
@@ -498,16 +494,9 @@ namespace fene {
         ::SetWindowLong(hwnd, GWL_STYLE, (GetWindowLong(hwnd, GWL_STYLE) | WS_OVERLAPPEDWINDOW) & ~WS_POPUP);
         ::SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_COMPOSITED | WS_EX_LAYERED);
 
-        if (!FenestraManager::System::impl::isWindowResizable()) {
-            if (SDL_GetWindowFlags(m_window) & SDL_WINDOW_MAXIMIZED) {
-                SDL_RestoreWindow(m_window);
-            }
-        }
-
-    }
-
-    void Window::endNativeWindowFrame() {
-
+        EventBeginFrame::subscribe(this, [this] {
+            s_titleBarHeight = ImGui::GetCurrentWindowRead()->MenuBarHeight;
+        });
     }
 
 }

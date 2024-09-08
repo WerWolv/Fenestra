@@ -381,8 +381,6 @@ namespace fene {
         // Render main dock space
         if (ImGui::Begin("FenestraDockSpace", nullptr, windowFlags)) {
             ImGui::PopStyleVar();
-
-            this->beginNativeWindowFrame();
         } else {
             ImGui::PopStyleVar();
         }
@@ -694,8 +692,6 @@ namespace fene {
 
         // Clean up all tasks that are done
         TaskManager::collectGarbage();
-
-        this->endNativeWindowFrame();
 
         ImGui::ErrorCheckEndFrameRecover(errorRecoverLogCallback, nullptr);
 

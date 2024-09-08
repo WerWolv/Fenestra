@@ -77,14 +77,6 @@ namespace fene {
         });
     }
 
-    void Window::beginNativeWindowFrame() {
-
-    }
-
-    void Window::endNativeWindowFrame() {
-
-    }
-
 }
 
 #endif

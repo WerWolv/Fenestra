@@ -111,27 +111,18 @@ namespace fene {
             RequestChangeTheme::post(!isDarkModeEnabled() ? "Light" : "Dark");
         });
 
+        EventBackendEventFired::subscribe(this, [this](const SDL_Event *event) {
+            switch (event->type) {
+                case SDL_EVENT_WINDOW_RESIZED:
+                    this->resize(event->window.data1, event->window.data2);
+                    break;
+                default:
+                    break;
+            }
+        });
+
         if (themeFollowSystem)
             EventOSThemeChanged::post();
-    }
-
-    void Window::beginNativeWindowFrame() {
-        static i32 prevWidth = 0;
-        static i32 prevHeight = 0;
-
-        auto width = canvas_get_width();
-        auto height = canvas_get_height();
-
-        if (prevWidth != width || prevHeight != height) {
-            // Size has changed
-
-            prevWidth  = width;
-            prevHeight = height;
-            this->resize(width, height);
-        }
-    }
-
-    void Window::endNativeWindowFrame() {
     }
 
 }

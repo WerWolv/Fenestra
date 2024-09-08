@@ -123,12 +123,6 @@ namespace fene {
             EventOSThemeChanged::post();
     }
 
-    void Window::beginNativeWindowFrame() {
-    }
-
-    void Window::endNativeWindowFrame() {
-    }
-
 }
 
 #endif

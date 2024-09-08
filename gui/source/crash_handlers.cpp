@@ -10,7 +10,7 @@
 
 #include <window.hpp>
 #include <init/tasks.hpp>
-#include <stacktrace.hpp>
+#include <fenestra/trace/stacktrace.hpp>
 
 #include <nlohmann/json.hpp>
 
@@ -38,7 +38,7 @@ namespace fene::crash {
     static CrashCallback crashCallback = sendNativeMessage;
 
     static void printStackTrace() {
-        auto stackTraceResult = stacktrace::getStackTrace();
+        auto stackTraceResult = trace::getStackTrace();
         log::fatal("Printing stacktrace using implementation '{}'", stackTraceResult.implementationName);
         for (const auto &stackFrame : stackTraceResult.stackFrames) {
             if (stackFrame.line == 0)
@@ -137,7 +137,7 @@ namespace fene::crash {
 
     // Setup functions to handle signals, uncaught exception, or similar stuff that will crash the application
     void setupCrashHandlers() {
-        stacktrace::initialize();
+        trace::initialize();
 
         // Register signal handlers
         {

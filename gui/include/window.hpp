@@ -33,8 +33,6 @@ namespace fene {
     private:
         void configureBackend();
         void setupNativeWindow();
-        void beginNativeWindowFrame();
-        void endNativeWindowFrame();
         void drawTitleBar();
 
         void frameBegin();
