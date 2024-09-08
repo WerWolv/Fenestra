@@ -463,9 +463,11 @@ namespace fene::plugin::bundled {
                 if (ImGui::Begin(title.data(), nullptr, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus)) {
                     ImGui::Dummy({});
                     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, scaled({ 10, 10 }));
+                    ImGui::PushStyleColor(ImGuiCol_WindowBg, u32(welcomeScreen->getBackgroundColor()));
+                    ImGui::PushStyleColor(ImGuiCol_Border, 0x00);
 
                     ImGui::SetNextWindowScroll({ 0.0F, -1.0F });
-                    ImGui::SetNextWindowSize(ImGui::GetContentRegionAvail() + scaled({ 2_scaled, 10 }));
+                    ImGui::SetNextWindowSize(ImGui::GetContentRegionAvail() + scaled({ 2_scaled, 6 }));
                     ImGui::SetNextWindowPos(ImGui::GetCursorScreenPos() - ImVec2(1_scaled, ImGui::GetStyle().FramePadding.y + 2_scaled));
                     ImGui::SetNextWindowViewport(ImGui::GetMainViewport()->ID);
                     if (ImGui::Begin("Welcome Screen", nullptr, ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
@@ -474,6 +476,8 @@ namespace fene::plugin::bundled {
                         welcomeScreen->draw();
                     }
                     ImGui::End();
+
+                    ImGui::PopStyleColor(2);
                     ImGui::PopStyleVar();
                 }
                 ImGui::End();

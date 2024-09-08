@@ -43,6 +43,7 @@ namespace fene {
 
             virtual void draw() = 0;
             virtual bool isVisible() = 0;
+            virtual ImColor getBackgroundColor() { return ImColor(0.0F, 0.0F, 0.0F, 0.0F); }
         };
 
         namespace impl {
