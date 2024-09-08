@@ -8,6 +8,7 @@ set(FENESTRA_MAIN_OUTPUT_DIRECTORY          "${CMAKE_BINARY_DIR}"   CACHE STRING
 set(FENESTRA_APPLICATION_PLUGIN_DIRECTORY   ""                      CACHE STRING "Application plugin directory")
 set(FENESTRA_STRICT_WARNINGS                ON                      CACHE BOOL   "Enable strict warnings")
 set(FENESTRA_DEFAULT_INSTALL_TARGETS        ON                      CACHE BOOL   "Enable default install targets")
+set(FENESTRA_MACOS_CREATE_BUNDLE            OFF                     CACHE BOOL   "Create macOS bundle")
 
 
 set(FENESTRA_BASE_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}")

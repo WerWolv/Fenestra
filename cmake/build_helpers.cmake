@@ -610,28 +610,34 @@ function(createPackage)
 
         set_target_properties(libfenestra PROPERTIES SOVERSION ${FENESTRA_APPLICATION_VERSION})
 
-        set_property(TARGET main PROPERTY MACOSX_BUNDLE_INFO_PLIST ${MACOSX_BUNDLE_INFO_PLIST})
+        if (FENESTRA_MACOS_CREATE_BUNDLE)
+            set_property(TARGET main PROPERTY MACOSX_BUNDLE_INFO_PLIST ${MACOSX_BUNDLE_INFO_PLIST})
 
-        install(TARGETS main BUNDLE DESTINATION ".")
+            install(TARGETS main BUNDLE DESTINATION ".")
 
-        install(TARGETS ${PLUGINS} LIBRARY DESTINATION "$<TARGET_FILE_DIR:main>/plugins")
-        install(CODE "set(CMAKE_INSTALL_PREFIX \"${CMAKE_INSTALL_PREFIX}\")")
-        install(CODE "set(FENESTRA_APPLICATION_NAME \"${FENESTRA_APPLICATION_NAME}\")")
-        install(CODE "set(BUNDLE_PATH \"${BUNDLE_PATH}\")")
-        install(CODE [[
-            include(BundleUtilities)
+            install(TARGETS ${PLUGINS} LIBRARY DESTINATION "$<TARGET_FILE_DIR:main>/plugins")
+            install(CODE "set(CMAKE_INSTALL_PREFIX \"${CMAKE_INSTALL_PREFIX}\")")
+            install(CODE "set(FENESTRA_APPLICATION_NAME \"${FENESTRA_APPLICATION_NAME}\")")
+            install(CODE "set(BUNDLE_PATH \"${BUNDLE_PATH}\")")
+            install(CODE [[
+                include(BundleUtilities)
 
-            set(PLUGINS_PATH "${BUNDLE_PATH}/Contents/MacOS/plugins")
-            copy_and_fixup_bundle("${CMAKE_CURRENT_BINARY_DIR}/${FENESTRA_APPLICATION_NAME}.app" "${BUNDLE_PATH}" "${PLUGINS_FILES}" "${PLUGINS_PATH}")
-        ]])
+                set(PLUGINS_PATH "${BUNDLE_PATH}/Contents/MacOS/plugins")
+                copy_and_fixup_bundle("${CMAKE_CURRENT_BINARY_DIR}/${FENESTRA_APPLICATION_NAME}.app" "${BUNDLE_PATH}" "${PLUGINS_FILES}" "${PLUGINS_PATH}")
+            ]])
 
-        find_program(CODESIGN_PATH codesign)
-        if (CODESIGN_PATH)
-            install(CODE "message(STATUS \"Signing bundle '${CMAKE_INSTALL_PREFIX}/${BUNDLE_NAME}'...\")")
-            install(CODE "execute_process(COMMAND ${CODESIGN_PATH} --force --deep --sign - ${BUNDLE_PATH} COMMAND_ERROR_IS_FATAL ANY)")
+            find_program(CODESIGN_PATH codesign)
+            if (CODESIGN_PATH)
+                install(CODE "message(STATUS \"Signing bundle '${CMAKE_INSTALL_PREFIX}/${BUNDLE_NAME}'...\")")
+                install(CODE "execute_process(COMMAND ${CODESIGN_PATH} --force --deep --sign - ${BUNDLE_PATH} COMMAND_ERROR_IS_FATAL ANY)")
+            endif()
+
+            install(CODE [[ message(STATUS "MacOS Bundle finalized. DO NOT TOUCH IT ANYMORE! ANY MODIFICATIONS WILL BREAK IT FROM NOW ON!") ]])
+        else()
+            install(TARGETS main RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+            install(TARGETS ${PLUGINS} LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}/plugins)
+            install(TARGETS libfenestra LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR})
         endif()
-
-        install(CODE [[ message(STATUS "MacOS Bundle finalized. DO NOT TOUCH IT ANYMORE! ANY MODIFICATIONS WILL BREAK IT FROM NOW ON!") ]])
     else()
         install(TARGETS main RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
         if (TARGET main-forwarder)

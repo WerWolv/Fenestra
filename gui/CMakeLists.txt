@@ -37,7 +37,7 @@ else ()
     set(FENESTRA_APPLICATION_NAME "${FENESTRA_APPLICATION_NAME_LOWER}")
 endif ()
 
-if (APPLE)
+if (APPLE AND FENESTRA_MACOS_CREATE_BUNDLE)
     set_target_properties(main PROPERTIES MACOSX_BUNDLE TRUE)
 endif ()
 
