@@ -1,6 +1,6 @@
 project(third_party)
 
-set(MESSAGES_SUPPRESSED OFF)
+set(MESSAGES_SUPPRESSED ON)
 set(BUILD_SHARED_LIBS OFF)
 
 add_external_library(NAME imgui TARGET imgui_all NO_SYSTEM)
