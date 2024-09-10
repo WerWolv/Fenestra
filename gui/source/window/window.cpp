@@ -159,8 +159,8 @@ namespace fene {
                     if (interfaceScaleSetting != 0)
                         break;
 
-                    const auto newScale = SDL_GetDisplayContentScale(SDL_GetDisplayForWindow(m_window));
-                    const auto oldScale = FenestraManager::System::getNativeScale();
+                    const double newScale = SDL_GetDisplayContentScale(SDL_GetDisplayForWindow(m_window));
+                    const double oldScale = FenestraManager::System::getNativeScale();
 
                     if (newScale == oldScale || newScale == 0 || oldScale == 0)
                         break;
@@ -169,7 +169,7 @@ namespace fene {
                     FenestraManager::System::impl::setNativeScale(newScale);
 
                     ThemeManager::reapplyCurrentTheme();
-                    ImGui::GetStyle().ScaleAllSizes(newScale);
+                    ImGui::GetStyle().ScaleAllSizes(newScale / oldScale);
                 }
 
                 default:

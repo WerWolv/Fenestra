@@ -361,13 +361,14 @@ namespace fene::fonts {
             }
         }
 
-        EventDPIChanged::subscribe([](float oldScaling, float newScaling) {
-            fontAtlas.updateFontScaling(newScaling / oldScaling);
+        EventDPIChanged::subscribe([](float, float newScaling) {
+            fontAtlas.updateFontScaling(newScaling);
 
             if (fontAtlas.build()) {
                 ImGui_ImplOpenGL3_DestroyFontsTexture();
-                ImGui_ImplOpenGL3_CreateFontsTexture();
                 FenestraManager::Fonts::impl::setFontAtlas(fontAtlas.getAtlas());
+            } else {
+                log::error("Failed to build font atlas!");
             }
         });
 

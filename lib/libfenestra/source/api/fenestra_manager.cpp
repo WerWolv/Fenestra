@@ -510,9 +510,9 @@ namespace fene::FenestraManager {
                 s_selectedFont = font;
             }
 
-            bool s_shouldLoadAllUnicodeCharacters = true;
-            void setLoadAllUnicodeCharacters(bool shouldLoad) {
-                s_shouldLoadAllUnicodeCharacters = shouldLoad;
+            bool s_shouldLoadAllUnicodeCharacters = false;
+            void setLoadAllUnicodeCharacters(bool enabled) {
+                s_shouldLoadAllUnicodeCharacters = enabled;
             }
 
         }
