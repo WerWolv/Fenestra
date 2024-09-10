@@ -1,5 +1,8 @@
 #include <fenestra/trace/stacktrace.hpp>
 
+#include <memory>
+#include <cstdint>
+
 #if __has_include(<cxxabi.h>)
     #include <cxxabi.h>
     #define HAVE_CXXABI
@@ -92,7 +95,7 @@ namespace {
 
                 DWORD displacementLine = 0;
 
-                u32 lineNumber = 0;
+                std::uint32_t lineNumber = 0;
                 const char *fileName;
                 if (SymGetLineFromAddr64(process, stackFrame.AddrPC.Offset, &displacementLine, &line) == TRUE) {
                     lineNumber = line.LineNumber;

@@ -13,6 +13,7 @@
     #include <fenestra/helpers/logger.hpp>
     #include <fenestra/helpers/default_paths.hpp>
     #include <fenestra/events/system_events.hpp>
+    #include <fenestra/events/ui_events.hpp>
 
     #include <imgui.h>
     #include <imgui_internal.h>
@@ -446,9 +447,7 @@ namespace fene {
             ULONG dataSize;
         };
 
-        EventThemeChanged::subscribe([this]{
-            auto hwnd = static_cast<HWND>(SDL_GetPointerProperty(SDL_GetWindowProperties(m_window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr));
-
+        EventThemeChanged::subscribe([this, hwnd]{
             static auto user32Dll = WinUniquePtr<HMODULE>(LoadLibraryA("user32.dll"), FreeLibrary);
             if (user32Dll != nullptr) {
                 using SetWindowCompositionAttributeFunc = BOOL(WINAPI*)(HWND, WINCOMPATTRDATA*);
@@ -489,13 +488,13 @@ namespace fene {
         }
 
         // Remove WS_POPUP style from the window to make various window management tools work
-        auto hwnd = static_cast<HWND>(SDL_GetPointerProperty(SDL_GetWindowProperties(m_window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr));
-
         ::SetWindowLong(hwnd, GWL_STYLE, (GetWindowLong(hwnd, GWL_STYLE) | WS_OVERLAPPEDWINDOW) & ~WS_POPUP);
         ::SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_COMPOSITED | WS_EX_LAYERED);
 
-        EventBeginFrame::subscribe(this, [this] {
+        EventFrameBegin::subscribe(this, [this] {
+            ImGui::Begin("FenestraDockSpace");
             s_titleBarHeight = ImGui::GetCurrentWindowRead()->MenuBarHeight;
+            ImGui::End();
         });
     }
 

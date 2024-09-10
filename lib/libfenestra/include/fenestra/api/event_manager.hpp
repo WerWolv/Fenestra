@@ -187,7 +187,7 @@ namespace fene {
 
             #if defined (DEBUG)
                 if constexpr (E::ShouldLog)
-                    log::debug("Event posted: '{}({})'", wolv::type::getTypeName<E>(), log::impl::DebugFormattable(args)...);
+                    log::debug("Event posted: '{}({})'", wolv::type::getTypeName<E>(), fmt::join(std::make_tuple(log::impl::DebugFormattable(args)...), ", "));
 #endif
         }
 
