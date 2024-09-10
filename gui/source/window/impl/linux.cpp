@@ -74,8 +74,6 @@ namespace fene {
     }
 
     void Window::initNative() {
-        SDL_SetHint(SDL_HINT_APP_ID, FENESTRA_APPLICATION_NAME_LOWER);
-
         log::impl::enableColorPrinting();
 
         // Add plugin library folders to dll search path
@@ -121,6 +119,10 @@ namespace fene {
 
         if (themeFollowSystem)
             EventOSThemeChanged::post();
+
+        SDL_SetHint(SDL_HINT_APP_ID, FENESTRA_APPLICATION_NAME_LOWER);
+        SDL_SetHint(SDL_HINT_VIDEO_WAYLAND_ALLOW_LIBDECOR, "1");
+        SDL_SetHint(SDL_HINT_VIDEO_WAYLAND_PREFER_LIBDECOR, "1");
     }
 
 }
