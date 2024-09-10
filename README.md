@@ -27,3 +27,9 @@ cmake --build . --target fenestra_all
 ```
 
 To launch the application, run the executable with the same name as your project in the build directory.
+
+# License
+
+Fenestra is licensed under the GPLv2 license in general but certain parts such as libfenestra or the library plugins are under LGPLv2.
+This allows Fenestra to remain free and open source while applications built on top of it can be licensed under any other license as they only link to these shared libraries.
+When using Fenestra in a commercial environment, it would still be highly appreciated if you'd sponsor the project!
