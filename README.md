@@ -6,6 +6,11 @@ Big parts of the repository are based on code originally written for [ImHex](htt
 
 ![Screenshot](./resources/screenshots/screenshot1.png)
 
+## Sponsoring
+
+If you use this project in a commercial project, please consider sponsoring me on [GitHub](https://github.com/sponsors/WerWolv) and get in contact!
+
+
 ## Getting Started
 
 The easiest way to get started is by using the [Fenestra Template](https://github.com/WerWolv/Fenestra-Template). 
