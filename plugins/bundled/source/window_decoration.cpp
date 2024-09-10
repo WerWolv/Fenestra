@@ -371,8 +371,9 @@ namespace fene::plugin::bundled {
 
                 if (FenestraManager::System::isBorderlessWindowModeEnabled()) {
                     #if defined(OS_WINDOWS)
-                        ImGui::SetCursorPosX(5_scaled);
-                        ImGui::Image(s_logoTexture, ImVec2(menuBarHeight, menuBarHeight));
+                        // TODO: Add a way to specify the logo image
+                        // ImGui::SetCursorPosX(5_scaled);
+                        // ImGui::Image(s_logoTexture, ImVec2(menuBarHeight, menuBarHeight));
                         ImGui::SetCursorPosX(5_scaled);
                         ImGui::InvisibleButton("##logo", ImVec2(menuBarHeight, menuBarHeight));
                         if (ImGui::IsItemHovered() && ImGui::IsAnyMouseDown())
