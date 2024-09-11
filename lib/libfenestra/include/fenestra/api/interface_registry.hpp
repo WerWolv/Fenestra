@@ -114,7 +114,7 @@ namespace fene {
 
         template<typename T>
         concept ViewType = requires {
-            requires std::derived_from<View, T>;
+            requires std::derived_from<T, View>;
             { T::Icon } -> std::convertible_to<const char *>;
             { T::UnlocalizedName } -> std::convertible_to<const char *>;
             { T::AllowMultipleInstances } -> std::convertible_to<bool>;
