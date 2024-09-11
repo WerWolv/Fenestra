@@ -19,3 +19,6 @@
 [submodule "lib/third_party/xdgpp/xdgpp"]
 	path = lib/third_party/xdgpp/xdgpp
 	url = https://github.com/WerWolv/xdgpp
+[submodule "lib/third_party/nativefiledialog-extended"]
+	path = lib/third_party/nativefiledialog-extended
+	url = https://github.com/btzy/nativefiledialog-extended

@@ -9,6 +9,7 @@ add_external_library(NAME nlohmann_json TARGET nlohmann_json)
 add_external_library(NAME xdgpp TARGET xdgpp)
 add_external_library(NAME fmt TARGET fmt::fmt)
 add_external_library(NAME lunasvg TARGET lunasvg)
+add_external_library(NAME nativefiledialog-extended TARGET nfd::nfd)
 
 set(SDL_WAYLAND_LIBDECOR ON CACHE INTERNAL "")
 add_external_library(NAME SDL TARGET SDL3-static)
