@@ -2,7 +2,7 @@ project(main)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(main ${APPLICATION_TYPE}
+add_executable(main
     source/main.cpp
     source/crash_handlers.cpp
 
@@ -39,7 +39,12 @@ endif ()
 
 if (APPLE AND FENESTRA_MACOS_CREATE_BUNDLE)
     set_target_properties(main PROPERTIES MACOSX_BUNDLE TRUE)
-endif ()
+endif()
+
+if (WIN32 AND NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
+    set_target_properties(main PROPERTIES WIN32_EXECUTABLE ON)
+endif()
+
 
 if (EMSCRIPTEN)
     target_link_options(main PRIVATE -sGL_ENABLE_GET_PROC_ADDRESS)
