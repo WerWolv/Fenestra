@@ -867,6 +867,13 @@ namespace fene {
         ImGuiIO &io       = ImGui::GetIO();
         ImGuiStyle &style = ImGui::GetStyle();
 
+        io.UserData = &m_imguiCustomData;
+
+        ImGui::StyleColorsDark();
+        ImPlot::StyleColorsDark();
+        ImNodes::StyleColorsDark();
+        ImGuiExt::StyleCustomColorsDark();
+
         ImNodes::GetStyle().Flags = ImNodesStyleFlags_NodeOutline | ImNodesStyleFlags_GridLines;
 
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
@@ -885,8 +892,6 @@ namespace fene {
             static bool always = true;
             ImNodes::GetIO().LinkDetachWithModifierClick.Modifier = &always;
         }
-
-        io.UserData = &m_imguiCustomData;
 
         const auto scale = float(FenestraManager::System::getGlobalScale());
         style.ScaleAllSizes(scale);
