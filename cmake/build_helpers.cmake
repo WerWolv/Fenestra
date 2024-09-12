@@ -113,7 +113,7 @@ macro(addPluginDirectories)
     file(MAKE_DIRECTORY "${FENESTRA_PLUGIN_FOLDER}")
 
     foreach (plugin IN ZIP_LISTS PLUGINS PLUGINS_PATHS)
-        set(plugin "${plugin_0}")
+        set(plugin "${plugin_0}_plugin")
         set(plugin_path "${plugin_1}")
 
         add_subdirectory("${plugin_path}" "${CMAKE_CURRENT_BINARY_DIR}/plugins/${plugin}")
@@ -572,7 +572,7 @@ function(createPackage)
 
         set(PLUGIN_TARGET_FILES "")
         foreach (plugin IN LISTS PLUGINS)
-            list(APPEND PLUGIN_TARGET_FILES "$<TARGET_FILE:${plugin}>")
+            list(APPEND PLUGIN_TARGET_FILES "$<TARGET_FILE:${plugin}_plugin>")
         endforeach ()
 
         # Grab all dynamically linked dependencies.

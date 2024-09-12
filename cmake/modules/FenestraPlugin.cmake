@@ -1,14 +1,19 @@
 macro(add_fenestra_plugin)
     # Parse arguments
     set(options LIBRARY_PLUGIN)
-    set(oneValueArgs NAME FENESTRA_VERSION)
+    set(oneValueArgs FENESTRA_VERSION)
     set(multiValueArgs SOURCES INCLUDES LIBRARIES FEATURES)
     cmake_parse_arguments(FENESTRA_PLUGIN "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    get_filename_component(FENESTRA_PLUGIN_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
 
     if (FENESTRA_PLUGIN_FENESTRA_VERSION)
         message(STATUS "Compiling plugin ${FENESTRA_PLUGIN_NAME} for Application Version ${FENESTRA_PLUGIN_FENESTRA_VERSION}")
         set(FENESTRA_VERSION_STRING "${FENESTRA_PLUGIN_FENESTRA_VERSION}")
     endif()
+
+    set(FENESTRA_PLUGIN_NAME_RAW "${FENESTRA_PLUGIN_NAME}")
+    set(FENESTRA_PLUGIN_NAME "${FENESTRA_PLUGIN_NAME}_plugin")
 
     if (FENESTRA_STATIC_LINK_PLUGINS)
         set(FENESTRA_PLUGIN_LIBRARY_TYPE STATIC)
@@ -34,6 +39,10 @@ macro(add_fenestra_plugin)
     # Create a new shared library for the plugin source code
     add_library(${FENESTRA_PLUGIN_NAME} ${FENESTRA_PLUGIN_LIBRARY_TYPE} ${FENESTRA_PLUGIN_SOURCES})
 
+    if (FENESTRA_PLUGIN_LIBRARY_PLUGIN)
+        add_library(${FENESTRA_PLUGIN_NAME_RAW} ALIAS ${FENESTRA_PLUGIN_NAME})
+    endif()
+
     # Add include directories and link libraries
     target_include_directories(${FENESTRA_PLUGIN_NAME} PUBLIC ${FENESTRA_PLUGIN_INCLUDES})
     target_link_libraries(${FENESTRA_PLUGIN_NAME} PUBLIC ${FENESTRA_PLUGIN_LIBRARIES})
@@ -48,6 +57,7 @@ macro(add_fenestra_plugin)
 
     # Enable required compiler flags
     enableUnityBuild(${FENESTRA_PLUGIN_NAME})
+    setupCompilerFlags(${FENESTRA_PLUGIN_NAME})
     setupCompilerFlags(${FENESTRA_PLUGIN_NAME})
 
     # Configure build properties
@@ -66,7 +76,7 @@ macro(add_fenestra_plugin)
 
     # Setup a romfs for the plugin
     list(APPEND LIBROMFS_RESOURCE_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/romfs)
-    set(LIBROMFS_PROJECT_NAME ${FENESTRA_PLUGIN_NAME})
+    set(LIBROMFS_PROJECT_NAME ${FENESTRA_PLUGIN_NAME_RAW})
     add_subdirectory(${FENESTRA_BASE_FOLDER}/lib/external/libromfs ${CMAKE_CURRENT_BINARY_DIR}/libromfs)
     target_link_libraries(${FENESTRA_PLUGIN_NAME} PRIVATE ${LIBROMFS_LIBRARY})
 
@@ -81,7 +91,7 @@ macro(add_fenestra_plugin)
             list(GET FENESTRA_PLUGIN_FEATURE 1 feature_description)
 
             string(TOUPPER ${feature_define} feature_define)
-            add_definitions(-DFENESTRA_PLUGIN_${FENESTRA_PLUGIN_NAME}_FEATURE_${feature_define}=0)
+            add_definitions(-DFENESTRA_PLUGIN_${FENESTRA_PLUGIN_NAME_RAW}_FEATURE_${feature_define}=0)
             set(FEATURE_DEFINE_CONTENT "${FEATURE_DEFINE_CONTENT}{ \"${feature_description}\", FENESTRA_FEATURE_ENABLED(${feature_define}) },")
         endforeach()
     endif()
@@ -123,7 +133,7 @@ macro(add_fenestra_plugin)
     if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/CMakeLists.txt AND FENESTRA_ENABLE_UNIT_TESTS AND FENESTRA_ENABLE_PLUGIN_TESTS)
         add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
         target_link_libraries(${FENESTRA_PLUGIN_NAME} PUBLIC ${FENESTRA_PLUGIN_NAME}_tests)
-        target_compile_definitions(${FENESTRA_PLUGIN_NAME}_tests PRIVATE FENESTRA_PROJECT_NAME="${FENESTRA_PLUGIN_NAME}-tests")
+        target_compile_definitions(${FENESTRA_PLUGIN_NAME}_tests PRIVATE FENESTRA_PROJECT_NAME="${FENESTRA_PLUGIN_NAME_RAW}-tests")
     endif()
 endmacro()
 
@@ -140,9 +150,9 @@ endmacro()
 macro (enable_plugin_feature feature)
     string(TOUPPER ${feature} feature)
     if (NOT (feature IN_LIST FENESTRA_PLUGIN_FEATURES))
-        message(FATAL_ERROR "Feature ${feature} is not enabled for plugin ${FENESTRA_PLUGIN_NAME}")
+        message(FATAL_ERROR "Feature ${feature} is not enabled for plugin ${FENESTRA_PLUGIN_NAME_RAW}")
     endif()
 
-    remove_definitions(-DFENESTRA_PLUGIN_${FENESTRA_PLUGIN_NAME}_FEATURE_${feature}=0)
-    add_definitions(-DFENESTRA_PLUGIN_${FENESTRA_PLUGIN_NAME}_FEATURE_${feature}=1)
+    remove_definitions(-DFENESTRA_PLUGIN_${FENESTRA_PLUGIN_NAME_RAW}_FEATURE_${feature}=0)
+    add_definitions(-DFENESTRA_PLUGIN_${FENESTRA_PLUGIN_NAME_RAW}_FEATURE_${feature}=1)
 endmacro()
