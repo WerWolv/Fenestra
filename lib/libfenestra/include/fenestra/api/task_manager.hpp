@@ -110,6 +110,8 @@ namespace fene {
         [[nodiscard]] bool shouldInterrupt() const;
 
         [[nodiscard]] u32 getProgress() const;
+        [[nodiscard]] u64 getValue() const;
+        [[nodiscard]] u64 getMaxValue() const;
 
         void interrupt() const;
     private:

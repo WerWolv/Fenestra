@@ -241,6 +241,23 @@ namespace fene {
         return u32((task->getValue() * 100) / task->getMaxValue());
     }
 
+    u64 TaskHolder::getValue() const {
+        const auto &task = m_task.lock();
+        if (!task)
+            return 0;
+
+        return task->getValue();
+    }
+
+    u64 TaskHolder::getMaxValue() const {
+        const auto &task = m_task.lock();
+        if (!task)
+            return 0;
+
+        return task->getMaxValue();
+    }
+
+
     void TaskManager::init() {
         const auto threadCount = std::thread::hardware_concurrency();
 
