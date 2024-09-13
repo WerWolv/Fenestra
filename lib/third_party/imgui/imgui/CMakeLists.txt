@@ -14,6 +14,7 @@ if (NOT FENESTRA_EXTERNAL_PLUGIN_BUILD)
 
             source/misc/freetype/imgui_freetype.cpp
     )
+    add_library(imgui::imgui ALIAS imgui_imgui)
 
     target_include_directories(imgui_imgui PUBLIC
         include
@@ -27,6 +28,7 @@ if (NOT FENESTRA_EXTERNAL_PLUGIN_BUILD)
     target_include_directories(imgui_imgui PUBLIC ${FREETYPE_INCLUDE_DIRS})
     target_link_directories(imgui_imgui PUBLIC ${FREETYPE_LIBRARY_DIRS})
     target_link_libraries(imgui_imgui PUBLIC ${FREETYPE_LIBRARIES})
+    target_compile_definitions(imgui_imgui PUBLIC IMGUI_LIBRARY_IMGUI=1)
 endif()
 
 add_library(imgui_includes INTERFACE)

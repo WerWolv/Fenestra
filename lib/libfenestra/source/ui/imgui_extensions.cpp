@@ -2,9 +2,6 @@
 
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <implot.h>
-#include <implot_internal.h>
-#include <cimgui.h>
 #include <opengl_support.h>
 
 #undef IMGUI_DEFINE_MATH_OPERATORS
@@ -946,7 +943,27 @@ namespace ImGuiExt {
 
         auto textSize = ImGui::CalcTextSize(drawString.c_str());
 
-        ImPlot::AddTextCentered(ImGui::GetWindowDrawList(), ImGui::GetCursorScreenPos() + availableSpace / 2 - ImVec2(0, textSize.y / 2), ImGui::GetColorU32(ImGuiCol_Text), drawString.c_str());
+        {
+            auto textBegin = drawString.c_str();
+            auto drawList = ImGui::GetWindowDrawList();
+            auto topCenter = ImGui::GetCursorScreenPos() + availableSpace / 2 - ImVec2(0, textSize.y / 2);
+            ImU32 textColor = ImGui::GetColorU32(ImGuiCol_Text);
+
+            float textHeight = ImGui::GetTextLineHeight();
+            const char* textEnd = ImGui::FindRenderedTextEnd(drawString.c_str(), nullptr);
+            ImVec2 textSize;
+            float y = 0;
+
+            while (const char* newLinePos = (const char*)memchr(textBegin, '\n', textEnd - textBegin)) {
+                textSize = ImGui::CalcTextSize(textBegin, newLinePos, true);
+                drawList->AddText(ImVec2(topCenter.x - textSize.x * 0.5F, topCenter.y + y), textColor, textBegin, newLinePos);
+                textBegin = newLinePos + 1;
+                y += textHeight;
+            }
+
+            textSize = ImGui::CalcTextSize(textBegin, textEnd, true);
+            drawList->AddText(ImVec2(topCenter.x - textSize.x * 0.5F, topCenter.y + y), textColor, textBegin, textEnd);
+        }
     }
     
     bool InputTextIcon(const char *label, const char *icon, std::string &buffer, ImGuiInputTextFlags flags) {

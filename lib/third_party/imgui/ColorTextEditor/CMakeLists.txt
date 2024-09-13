@@ -8,12 +8,14 @@ if (NOT FENESTRA_EXTERNAL_PLUGIN_BUILD)
     add_library(imgui_color_text_editor OBJECT
         source/TextEditor.cpp
     )
+    add_library(imgui::color_text_editor ALIAS imgui_color_text_editor)
 
     target_include_directories(imgui_color_text_editor PUBLIC
         include
     )
 
     target_link_libraries(imgui_color_text_editor PRIVATE imgui_includes)
+    target_compile_definitions(imgui_color_text_editor PUBLIC IMGUI_LIBRARY_COLOR_TEXT_EDITOR=1)
 endif()
 
 target_include_directories(imgui_all_includes INTERFACE include)

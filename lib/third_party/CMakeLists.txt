@@ -3,7 +3,7 @@ project(third_party)
 set(MESSAGES_SUPPRESSED ON)
 set(BUILD_SHARED_LIBS OFF)
 
-add_external_library(NAME imgui TARGET imgui_all NO_SYSTEM)
+add_external_library(NAME imgui TARGET imgui::all NO_SYSTEM)
 add_external_library(NAME jthread TARGET jthread)
 add_external_library(NAME nlohmann_json TARGET nlohmann_json)
 add_external_library(NAME xdgpp TARGET xdgpp)

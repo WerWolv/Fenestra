@@ -33,10 +33,16 @@
 #include <opengl_support.h>
 
 #include <fenestra/ui/imgui_extensions.h>
-#include <implot.h>
-#include <implot_internal.h>
-#include <imnodes.h>
-#include <imnodes_internal.h>
+
+#if defined(IMGUI_LIBRARY_IMPLOT)
+    #include <implot.h>
+    #include <implot_internal.h>
+#endif
+
+#if defined(IMGUI_LIBRARY_IMNODES)
+    #include <imnodes.h>
+    #include <imnodes_internal.h>
+#endif
 
 #include <wolv/utils/string.hpp>
 
@@ -875,8 +881,12 @@ namespace fene {
 
         // Initialize ImGui and all other ImGui extensions
         GImGui   = ImGui::CreateContext(fonts);
-        GImPlot  = ImPlot::CreateContext();
-        GImNodes = ImNodes::CreateContext();
+        #if defined(IMGUI_LIBRARY_IMPLOT)
+            GImPlot  = ImPlot::CreateContext();
+        #endif
+        #if defined(IMGUI_LIBRARY_IMNODES)
+            GImNodes = ImNodes::CreateContext();
+        #endif
 
         ImGuiIO &io       = ImGui::GetIO();
         ImGuiStyle &style = ImGui::GetStyle();
@@ -884,11 +894,24 @@ namespace fene {
         io.UserData = &m_imguiCustomData;
 
         ImGui::StyleColorsDark();
-        ImPlot::StyleColorsDark();
-        ImNodes::StyleColorsDark();
+        #if defined(IMGUI_LIBRARY_IMPLOT)
+            ImPlot::StyleColorsDark();
+        #endif
+        #if defined(IMGUI_LIBRARY_IMNODES)
+            ImNodes::StyleColorsDark();
+            ImNodes::GetStyle().Flags = ImNodesStyleFlags_NodeOutline | ImNodesStyleFlags_GridLines;
+
+            ImNodes::PushAttributeFlag(ImNodesAttributeFlags_EnableLinkDetachWithDragClick);
+            ImNodes::PushAttributeFlag(ImNodesAttributeFlags_EnableLinkCreationOnSnap);
+
+            // Allow ImNodes links to always be detached without holding down any button
+            {
+                static bool always = true;
+                ImNodes::GetIO().LinkDetachWithModifierClick.Modifier = &always;
+            }
+        #endif
         ImGuiExt::StyleCustomColorsDark();
 
-        ImNodes::GetStyle().Flags = ImNodesStyleFlags_NodeOutline | ImNodesStyleFlags_GridLines;
 
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
         io.ConfigWindowsMoveFromTitleBarOnly = true;
@@ -897,15 +920,6 @@ namespace fene {
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
         io.ConfigViewportsNoTaskBarIcon = false;
-
-        ImNodes::PushAttributeFlag(ImNodesAttributeFlags_EnableLinkDetachWithDragClick);
-        ImNodes::PushAttributeFlag(ImNodesAttributeFlags_EnableLinkCreationOnSnap);
-
-        // Allow ImNodes links to always be detached without holding down any button
-        {
-            static bool always = true;
-            ImNodes::GetIO().LinkDetachWithModifierClick.Modifier = &always;
-        }
 
         const auto scale = float(FenestraManager::System::getGlobalScale());
         style.ScaleAllSizes(scale);
@@ -986,7 +1000,9 @@ namespace fene {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplSDL3_Shutdown();
 
-        ImPlot::DestroyContext();
+        #if defined(IMGUI_LIBRARY_IMPLOT)
+            ImPlot::DestroyContext();
+        #endif
         ImGui::DestroyContext();
     }
 

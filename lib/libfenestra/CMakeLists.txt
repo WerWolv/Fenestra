@@ -93,7 +93,7 @@ target_link_libraries(libfenestra PUBLIC
         nlohmann_json
         fmt::fmt
         nfd::nfd
-        imgui_imgui imgui_imnodes imgui_implot imgui_color_text_editor imgui_cimgui imgui_custom
+        imgui::imgui imgui::backend ${FENESTRA_BUNDLED_IMGUI_LIBRARIES}
         lunasvg
         trace
 )
