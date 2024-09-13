@@ -283,6 +283,15 @@ namespace fene {
                 case SDL_EVENT_WINDOW_RESIZED:
                     window->m_unlockFrameRate = true;
                     break;
+
+                case SDL_EVENT_WINDOW_RESTORED:
+                case SDL_EVENT_WINDOW_MINIMIZED:
+                case SDL_EVENT_WINDOW_MAXIMIZED:
+                    window->m_forceRerender = true;
+                    break;
+
+                default:
+                    break;
             }
 
 
@@ -745,6 +754,11 @@ namespace fene {
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
         SDL_GL_MakeCurrent(m_window, backupContext);
+
+        if (m_forceRerender) {
+            m_forceRerender = false;
+            shouldRender = true;
+        }
 
         if (shouldRender) {
             auto* drawData = ImGui::GetDrawData();

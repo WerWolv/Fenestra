@@ -62,6 +62,7 @@ namespace fene {
         std::vector<int> m_pressedKeys;
 
         bool m_unlockFrameRate = true;
+        bool m_forceRerender = false;
 
         ImGuiExt::ImGuiCustomData m_imguiCustomData;
 
