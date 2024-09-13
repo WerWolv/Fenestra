@@ -437,6 +437,10 @@ macro(addBundledLibraries)
             endif()
         endif()
     endif()
+
+    foreach (library IN LISTS FENESTRA_BUNDLED_IMGUI_LIBRARIES)
+        message(STATUS "Enabling ImGui library '${library}'")
+    endforeach()
 endmacro()
 
 function(enableUnityBuild TARGET)
