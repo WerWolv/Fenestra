@@ -49,9 +49,9 @@ namespace fene {
         std::recursive_mutex s_deferredCallsMutex, s_tasksFinishedMutex;
 
         std::list<std::shared_ptr<Task>> s_tasks, s_taskQueue;
-        std::list<std::function<void()>> s_deferredCalls;
-        std::unordered_map<SourceLocationWrapper, std::function<void()>> s_onceDeferredCalls;
-        std::list<std::function<void()>> s_tasksFinishedCallbacks;
+        std::list<std::move_only_function<void()>> s_deferredCalls;
+        std::unordered_map<SourceLocationWrapper, std::move_only_function<void()>> s_onceDeferredCalls;
+        std::list<std::move_only_function<void()>> s_tasksFinishedCallbacks;
 
         std::mutex s_queueMutex;
         std::condition_variable s_jobCondVar;
@@ -63,7 +63,7 @@ namespace fene {
     }
 
 
-    Task::Task(UnlocalizedString unlocalizedName, u64 maxValue, bool background, std::function<void(Task &)> function)
+    Task::Task(UnlocalizedString unlocalizedName, u64 maxValue, bool background, std::move_only_function<void(Task &)> function)
     : m_unlocalizedName(std::move(unlocalizedName)), m_maxValue(maxValue), m_function(std::move(function)), m_background(background) { }
 
     Task::Task(Task &&other) noexcept {
@@ -125,7 +125,7 @@ namespace fene {
             m_interruptCallback();
     }
 
-    void Task::setInterruptCallback(std::function<void()> callback) {
+    void Task::setInterruptCallback(std::move_only_function<void()> callback) {
         m_interruptCallback = std::move(callback);
     }
 
@@ -327,7 +327,7 @@ namespace fene {
         s_tasksFinishedCallbacks.clear();
     }
 
-    TaskHolder TaskManager::createTask(std::string name, u64 maxValue, bool background, std::function<void(Task&)> function) {
+    TaskHolder TaskManager::createTask(std::string name, u64 maxValue, bool background, std::move_only_function<void(Task&)> function) {
         std::scoped_lock lock(s_queueMutex);
 
         // Construct new task
@@ -344,12 +344,12 @@ namespace fene {
     }
 
 
-    TaskHolder TaskManager::createTask(std::string name, u64 maxValue, std::function<void(Task &)> function) {
+    TaskHolder TaskManager::createTask(std::string name, u64 maxValue, std::move_only_function<void(Task &)> function) {
         log::debug("Creating task {}", name);
         return createTask(std::move(name), maxValue, false, std::move(function));
     }
 
-    TaskHolder TaskManager::createBackgroundTask(std::string name, std::function<void(Task &)> function) {
+    TaskHolder TaskManager::createBackgroundTask(std::string name, std::move_only_function<void(Task &)> function) {
         log::debug("Creating background task {}", name);
         return createTask(std::move(name), 0, true, std::move(function));
     }
@@ -397,23 +397,23 @@ namespace fene {
     }
 
 
-    void TaskManager::doLater(const std::function<void()> &function) {
+    void TaskManager::doLater(std::move_only_function<void()> function) {
         std::scoped_lock lock(s_deferredCallsMutex);
 
-        s_deferredCalls.push_back(function);
+        s_deferredCalls.emplace_back(std::move(function));
     }
 
-    void TaskManager::doLaterOnce(const std::function<void()> &function, std::source_location location) {
+    void TaskManager::doLaterOnce(std::move_only_function<void()> function, std::source_location location) {
         std::scoped_lock lock(s_deferredCallsMutex);
 
-        s_onceDeferredCalls[SourceLocationWrapper{ location }] = function;
+        s_onceDeferredCalls[SourceLocationWrapper{ location }] = std::move(function);
     }
 
     void TaskManager::runDeferredCalls() {
         std::scoped_lock lock(s_deferredCallsMutex);
 
         while (!s_deferredCalls.empty()) {
-            auto callback = s_deferredCalls.front();
+            auto callback = std::move(s_deferredCalls.front());
             s_deferredCalls.pop_front();
             callback();
         }
@@ -423,14 +423,10 @@ namespace fene {
         }
     }
 
-    void TaskManager::runWhenTasksFinished(const std::function<void()> &function) {
+    void TaskManager::runWhenTasksFinished(std::move_only_function<void()> function) {
         std::scoped_lock lock(s_tasksFinishedMutex);
 
-        for (const auto &task : s_tasks) {
-            task->interrupt();
-        }
-
-        s_tasksFinishedCallbacks.push_back(function);
+        s_tasksFinishedCallbacks.emplace_back(std::move(function));
     }
 
     void TaskManager::setCurrentThreadName(const std::string &name) {
