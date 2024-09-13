@@ -230,9 +230,9 @@ namespace fene::plugin::bundled {
                         return ImU32(ImColor(ImGui::GetStyleColorVec4(ImGuiCol_DockingEmptyBg) * ImVec4(1, 1, 1, alpha)));
                     };
 
-                    ImGui::PushStyleColor(ImGuiCol_Button, buttonColor(0.5F));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, buttonColor(0.7F));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, buttonColor(0.9F));
+                    ImGui::PushStyleColor(ImGuiCol_Button, buttonColor(0.25F));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, buttonColor(0.50F));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, buttonColor(0.75F));
                     ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0_scaled);
                     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 4_scaled);
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, scaled({ 1, 1 }));
