@@ -331,7 +331,7 @@ namespace fene {
                 shouldLongSleep = false;
 
             const auto windowFlags = SDL_GetWindowFlags(m_window);
-            if (windowFlags & SDL_WINDOW_MINIMIZED || !(windowFlags & SDL_WINDOW_INPUT_FOCUS))
+            if (windowFlags & SDL_WINDOW_MINIMIZED)
                 shouldLongSleep = true;
 
             m_unlockFrameRate = false;
