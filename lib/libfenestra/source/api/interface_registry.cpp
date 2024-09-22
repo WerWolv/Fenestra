@@ -87,8 +87,10 @@ namespace fene::InterfaceRegistry {
 
     }
 
-    void openView(const UnlocalizedString &unlocalizedName) {
-        impl::s_openViews->push_back(impl::getViewCreators().at(unlocalizedName).creator());
+    View* openView(const UnlocalizedString &unlocalizedName) {
+        auto &view = impl::s_openViews->emplace_back(impl::getViewCreators().at(unlocalizedName).creator());
+
+        return view.get();
     }
 
     void closeView(View *view) {

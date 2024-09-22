@@ -137,7 +137,7 @@ namespace fene {
             });
         }
 
-        void openView(const UnlocalizedString &unlocalizedName);
+        View* openView(const UnlocalizedString &unlocalizedName);
         void closeView(View *view);
 
         /**
