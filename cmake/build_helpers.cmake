@@ -129,7 +129,7 @@ macro(addPluginDirectories)
             else ()
                 if (WIN32)
                     get_target_property(target_type ${plugin} TYPE)
-                    if (${target_type} STREQUAL "SHARED_LIBRARY" OR ${target_type} STREQUAL "MODULE_LIBRARY")
+                    if (${target_type} STREQUAL "MODULE_LIBRARY")
                         install(TARGETS ${plugin} LIBRARY DESTINATION ${PLUGINS_INSTALL_LOCATION})
                     else ()
                         install(TARGETS ${plugin} RUNTIME DESTINATION ${PLUGINS_INSTALL_LOCATION})
@@ -602,7 +602,7 @@ function(createPackage)
                     TYPE SHARED_LIBRARY
                     FOLLOW_SYMLINK_CHAIN
                     FILES "${_file}"
-                    )
+                )
             endforeach()
         ]])
     elseif(UNIX AND NOT APPLE)

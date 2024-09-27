@@ -107,7 +107,12 @@ macro(add_fenestra_plugin)
     endif()
 
     if (FENESTRA_EXTERNAL_PLUGIN_BUILD)
-        install(TARGETS ${FENESTRA_PLUGIN_NAME} DESTINATION ".")
+        install(
+            TARGETS
+                ${FENESTRA_PLUGIN_NAME}
+            RUNTIME DESTINATION "."
+            LIBRARY DESTINATION "."
+        )
     endif()
 
     # Fix rpath
