@@ -51,9 +51,11 @@ macro(add_fenestra_plugin)
     precompileHeaders(${FENESTRA_PLUGIN_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
     # Add FENESTRA_PROJECT_NAME and FENESTRA_VERSION define
-    target_compile_definitions(${FENESTRA_PLUGIN_NAME} PRIVATE FENESTRA_PROJECT_NAME="${FENESTRA_PLUGIN_NAME}")
+    target_compile_definitions(${FENESTRA_PLUGIN_NAME} PRIVATE FENESTRA_PROJECT_NAME="${FENESTRA_PLUGIN_NAME_RAW}")
     target_compile_definitions(${FENESTRA_PLUGIN_NAME} PRIVATE FENESTRA_VERSION="${FENESTRA_VERSION_STRING}")
-    target_compile_definitions(${FENESTRA_PLUGIN_NAME} PRIVATE FENESTRA_PLUGIN_NAME=${FENESTRA_PLUGIN_NAME})
+    target_compile_definitions(${FENESTRA_PLUGIN_NAME} PRIVATE FENESTRA_PLUGIN_NAME=${FENESTRA_PLUGIN_NAME_RAW})
+
+    set_target_properties(${FENESTRA_PLUGIN_NAME} PROPERTIES OUTPUT_NAME ${FENESTRA_PLUGIN_NAME_RAW})
 
     # Enable required compiler flags
     enableUnityBuild(${FENESTRA_PLUGIN_NAME})
@@ -64,6 +66,7 @@ macro(add_fenestra_plugin)
     set_target_properties(${FENESTRA_PLUGIN_NAME}
             PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY "${FENESTRA_MAIN_OUTPUT_DIRECTORY}/plugins"
+            LIBRARY_OUTPUT_DIRECTORY "${FENESTRA_MAIN_OUTPUT_DIRECTORY}/plugins"
             CXX_STANDARD 23
             PREFIX ""
             SUFFIX ${FENESTRA_PLUGIN_SUFFIX}
