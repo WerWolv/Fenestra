@@ -312,7 +312,7 @@ namespace fene::plugin::bundled {
                 fittingItems += 1;
             }
 
-            if (fittingItems <= 2)
+            if (fittingItems <= 2 && menuItems.size() > 2)
                 fittingItems = 0;
 
             {
