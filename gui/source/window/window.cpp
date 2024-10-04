@@ -415,6 +415,8 @@ namespace fene {
                     ImGui::TableHeadersRow();
 
                     for (const auto &folderPath : paths::Plugins.all()) {
+                        if (!std::fs::exists(folderPath))
+                            continue;
                         for (const auto &entry : std::fs::directory_iterator(folderPath)) {
                             const auto &filePath = entry.path();
                             if (!filePath.has_extension())
