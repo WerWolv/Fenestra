@@ -71,23 +71,36 @@ namespace fene::paths {
             paths.push_back(ProjectFile::getPath().parent_path());
         }*/
 
+        for (const auto &path : paths) {
+            if (!wolv::io::fs::isDirectory(path))
+                wolv::io::fs::createDirectories(path);
+        }
+
         return paths;
     }
 
     std::vector<std::fs::path> getConfigPaths(bool includeSystemFolders) {
+        std::vector<std::fs::path> result;
         #if defined(OS_WINDOWS)
-            return getDataPaths(includeSystemFolders);
+            result = getDataPaths(includeSystemFolders);
         #elif defined(OS_MACOS)
-            return getDataPaths(includeSystemFolders);
+            result = getDataPaths(includeSystemFolders);
         #elif defined(OS_LINUX) || defined(OS_WEB)
             std::ignore = includeSystemFolders;
-            return { xdg::ConfigHomeDir() / FENESTRA_APPLICATION_NAME_LOWER };
+            result = { xdg::ConfigHomeDir() / FENESTRA_APPLICATION_NAME_LOWER };
         #endif
+
+        for (const auto &path : result) {
+            if (!wolv::io::fs::isDirectory(path))
+                wolv::io::fs::createDirectories(path);
+        }
+
+        return result;
     }
 
     static std::vector<std::fs::path> appendPath(std::vector<std::fs::path> paths, std::fs::path folder) {
         folder.make_preferred();
-        
+
         for (auto &path : paths)
             path = path / folder;
 
@@ -101,6 +114,11 @@ namespace fene::paths {
         #if defined(OS_LINUX) && defined(SYSTEM_PLUGINS_LOCATION)
             paths.push_back(SYSTEM_PLUGINS_LOCATION);
         #endif
+
+        for (const auto &path : paths) {
+            if (!wolv::io::fs::isDirectory(path))
+                wolv::io::fs::createDirectories(path);
+        }
 
         return paths;
     }
