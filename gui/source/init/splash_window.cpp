@@ -223,7 +223,7 @@ namespace fene::init {
     }
 
     void WindowSplash::initBackend() {
-        if (!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_TIMER)) {
+        if (!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
             log::fatal("Failed to initialize SDL3!");
             log::fatal("Error: {}", SDL_GetError());
             std::exit(EXIT_FAILURE);

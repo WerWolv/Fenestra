@@ -2859,10 +2859,6 @@ CIMGUI_API int igImStrlenW(const ImWchar* str)
 {
     return ImStrlenW(str);
 }
-CIMGUI_API const ImWchar* igImStrbolW(const ImWchar* buf_mid_line,const ImWchar* buf_begin)
-{
-    return ImStrbolW(buf_mid_line,buf_begin);
-}
 CIMGUI_API char igImToUpper(char c)
 {
     return ImToUpper(c);
@@ -3470,14 +3466,6 @@ CIMGUI_API void ImGuiInputTextState_ClearFreeMemory(ImGuiInputTextState* self)
 {
     return self->ClearFreeMemory();
 }
-CIMGUI_API int ImGuiInputTextState_GetUndoAvailCount(ImGuiInputTextState* self)
-{
-    return self->GetUndoAvailCount();
-}
-CIMGUI_API int ImGuiInputTextState_GetRedoAvailCount(ImGuiInputTextState* self)
-{
-    return self->GetRedoAvailCount();
-}
 CIMGUI_API void ImGuiInputTextState_OnKeyPressed(ImGuiInputTextState* self,int key)
 {
     return self->OnKeyPressed(key);
@@ -3557,22 +3545,6 @@ CIMGUI_API ImGuiLastItemData* ImGuiLastItemData_ImGuiLastItemData(void)
 CIMGUI_API void ImGuiLastItemData_destroy(ImGuiLastItemData* self)
 {
     IM_DELETE(self);
-}
-CIMGUI_API ImGuiStackSizes* ImGuiStackSizes_ImGuiStackSizes(void)
-{
-    return IM_NEW(ImGuiStackSizes)();
-}
-CIMGUI_API void ImGuiStackSizes_destroy(ImGuiStackSizes* self)
-{
-    IM_DELETE(self);
-}
-CIMGUI_API void ImGuiStackSizes_SetToContextState(ImGuiStackSizes* self,ImGuiContext* ctx)
-{
-    return self->SetToContextState(ctx);
-}
-CIMGUI_API void ImGuiStackSizes_CompareWithContextState(ImGuiStackSizes* self,ImGuiContext* ctx)
-{
-    return self->CompareWithContextState(ctx);
 }
 CIMGUI_API ImGuiPtrOrIndex* ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr(void* ptr)
 {
@@ -4174,9 +4146,9 @@ CIMGUI_API void igCallContextHooks(ImGuiContext* context,ImGuiContextHookType ty
 {
     return ImGui::CallContextHooks(context,type);
 }
-CIMGUI_API void igTranslateWindowsInViewport(ImGuiViewportP* viewport,const ImVec2 old_pos,const ImVec2 new_pos)
+CIMGUI_API void igTranslateWindowsInViewport(ImGuiViewportP* viewport,const ImVec2 old_pos,const ImVec2 new_pos,const ImVec2 old_size,const ImVec2 new_size)
 {
-    return ImGui::TranslateWindowsInViewport(viewport,old_pos,new_pos);
+    return ImGui::TranslateWindowsInViewport(viewport,old_pos,new_pos,old_size,new_size);
 }
 CIMGUI_API void igScaleWindowsInViewport(ImGuiViewportP* viewport,float scale)
 {
@@ -5561,14 +5533,6 @@ CIMGUI_API void igGcAwakeTransientWindowBuffers(ImGuiWindow* window)
 CIMGUI_API void igDebugAllocHook(ImGuiDebugAllocInfo* info,int frame_count,void* ptr,size_t size)
 {
     return ImGui::DebugAllocHook(info,frame_count,ptr,size);
-}
-CIMGUI_API void igErrorCheckEndFrameRecover(ImGuiErrorLogCallback log_callback,void* user_data)
-{
-    return ImGui::ErrorCheckEndFrameRecover(log_callback,user_data);
-}
-CIMGUI_API void igErrorCheckEndWindowRecover(ImGuiErrorLogCallback log_callback,void* user_data)
-{
-    return ImGui::ErrorCheckEndWindowRecover(log_callback,user_data);
 }
 CIMGUI_API void igErrorCheckUsingSetCursorPosToExtendParentBoundaries()
 {

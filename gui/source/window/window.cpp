@@ -258,23 +258,23 @@ namespace fene {
             }
 
             // Try to recover from the exception by bringing ImGui back into a working state
-            ImGui::ErrorCheckEndFrameRecover(errorRecoverLogCallback, nullptr);
             ImGui::EndFrame();
             ImGui::UpdatePlatformWindows();
 
             // Handle the exception
             handleException();
         }
+
         #endif
     }
 
     void Window::loop() {
         SDL_ShowWindow(m_window);
 
-        SDL_AddEventWatch([](void *userData, SDL_Event *event) -> SDL_bool {
+        SDL_AddEventWatch([](void *userData, SDL_Event *event) -> bool {
             auto window = static_cast<Window*>(userData);
             if (!window->m_windowOpen)
-                return SDL_FALSE;
+                return false;
 
             EventBackendEventFired::post(event);
             ImGui_ImplSDL3_ProcessEvent(event);
@@ -300,8 +300,7 @@ namespace fene {
                     break;
             }
 
-
-            return SDL_TRUE;
+            return true;
         }, this);
 
         while (m_windowOpen) {
@@ -710,8 +709,6 @@ namespace fene {
         // Clean up all tasks that are done
         TaskManager::collectGarbage();
 
-        ImGui::ErrorCheckEndFrameRecover(errorRecoverLogCallback, nullptr);
-
         // Finalize ImGui frame
         ImGui::Render();
 
@@ -796,7 +793,7 @@ namespace fene {
     void Window::initBackend() {
         auto initialWindowProperties = FenestraManager::System::getInitialWindowProperties();
 
-        if (!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_TIMER)) {
+        if (!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
             log::fatal("Failed to initialize SDL3!");
             log::fatal("Error: {}", SDL_GetError());
             std::abort();
