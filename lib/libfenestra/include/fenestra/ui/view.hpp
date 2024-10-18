@@ -7,6 +7,7 @@
 #include <fenestra/ui/imgui_extensions.h>
 
 #include <fenestra/api/fenestra_manager.hpp>
+#include <fenestra/api/interface_registry.hpp>
 #include <fenestra/api/shortcut_manager.hpp>
 #include <fenestra/api/event_manager.hpp>
 #include <fenestra/api/localization_manager.hpp>

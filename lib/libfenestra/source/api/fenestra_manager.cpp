@@ -8,6 +8,7 @@
 #include <fenestra/events/fenestra_events.hpp>
 #include <fenestra/events/system_events.hpp>
 #include <SDL3/SDL_clipboard.h>
+#include <SDL3/SDL_video.h>
 
 #include <wolv/utils/string.hpp>
 
@@ -69,6 +70,10 @@ namespace fene::FenestraManager {
             static bool s_multiWindowMode = true;
             void setMultiWindowMode(bool enabled) {
                 s_multiWindowMode = enabled;
+            }
+
+            void setWindowResizable(bool enabled) {
+                SDL_SetWindowResizable(static_cast<SDL_Window*>(getMainWindowHandle()), enabled);
             }
 
             static std::optional<InitialWindowProperties> s_initialWindowProperties;

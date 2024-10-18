@@ -6,6 +6,7 @@ add_fenestra_plugin(
     SOURCES
         source/interface.cpp
         source/window_decoration.cpp
+        source/themes.cpp
     INCLUDES
         include
     LIBRARIES

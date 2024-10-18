@@ -14,7 +14,7 @@ EVENT_DEF(EventApplicationStartupFinished);
 EVENT_DEF(RequestSendMessageToMainInstance, const std::string &, const std::vector<fene::u8> &);
 EVENT_DEF(EventThemeChanged);
 EVENT_DEF(EventWindowFocused, bool);
-EVENT_DEF(EventWindowClosing, void *);
+EVENT_DEF(EventWindowClosing, void *, bool*);
 EVENT_DEF(EventWindowInitialized);
 EVENT_DEF(EventWindowDeinitializing, void*);
 EVENT_DEF(EventDPIChanged, float, float);

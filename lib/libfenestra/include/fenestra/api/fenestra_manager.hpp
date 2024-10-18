@@ -59,7 +59,7 @@ namespace fene {
 
                 void setBorderlessWindowMode(bool enabled);
                 void setMultiWindowMode(bool enabled);
-
+                void setWindowResizable(bool enabled);
 
                 void addInitArgument(const std::string &key, const std::string &value = { });
 
@@ -92,6 +92,7 @@ namespace fene {
              * @return The current target FPS
              */
             float getTargetFPS();
+            void setTargetFPS(float fps);
 
             /**
              * @brief Gets the current GPU vendor

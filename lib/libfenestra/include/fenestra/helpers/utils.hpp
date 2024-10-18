@@ -302,9 +302,6 @@ namespace fene {
 
     [[nodiscard]] std::optional<std::fs::path> getInitialFilePath();
 
-    [[nodiscard]] std::string generateHexView(u64 offset, u64 size, prv::Provider *provider);
-    [[nodiscard]] std::string generateHexView(u64 offset, const std::vector<u8> &data);
-
     [[nodiscard]] std::string formatSystemError(i32 error);
 
     /**

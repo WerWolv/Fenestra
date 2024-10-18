@@ -22,7 +22,7 @@ namespace fene {
     class Task {
     public:
         Task() = default;
-        Task(UnlocalizedString unlocalizedName, u64 maxValue, bool background, std::move_only_function<void(Task &)> function);
+        Task(UnlocalizedString unlocalizedName, u64 maxValue, bool background, std::function<void(Task &)> function);
 
         Task(const Task&) = delete;
         Task(Task &&other) noexcept;
@@ -54,7 +54,7 @@ namespace fene {
          * @brief Sets a callback that is called when the task is interrupted
          * @param callback Callback to be called
          */
-        void setInterruptCallback(std::move_only_function<void()> callback);
+        void setInterruptCallback(std::function<void()> callback);
 
         [[nodiscard]] bool isBackgroundTask() const;
         [[nodiscard]] bool isFinished() const;
@@ -79,8 +79,8 @@ namespace fene {
 
         UnlocalizedString m_unlocalizedName;
         std::atomic<u64> m_currValue = 0, m_maxValue = 0;
-        std::move_only_function<void()> m_interruptCallback;
-        std::move_only_function<void(Task &)> m_function;
+        std::function<void()> m_interruptCallback;
+        std::function<void(Task &)> m_function;
 
         std::atomic<bool> m_shouldInterrupt = false;
         std::atomic<bool> m_background = true;
@@ -137,7 +137,7 @@ namespace fene {
          * @param function Function to be executed
          * @return A TaskHolder holding a weak reference to the task
          */
-        static TaskHolder createTask(std::string name, u64 maxValue, std::move_only_function<void(Task &)> function);
+        static TaskHolder createTask(std::string name, u64 maxValue, std::function<void(Task &)> function);
 
         /**
          * @brief Creates a new asynchronous task that does not get displayed in the Task Manager
@@ -145,26 +145,26 @@ namespace fene {
          * @param function Function to be executed
          * @return A TaskHolder holding a weak reference to the task
          */
-        static TaskHolder createBackgroundTask(std::string name, std::move_only_function<void(Task &)> function);
+        static TaskHolder createBackgroundTask(std::string name, std::function<void(Task &)> function);
 
         /**
          * @brief Creates a new synchronous task that will execute the given function at the start of the next frame
          * @param function Function to be executed
          */
-        static void doLater(std::move_only_function<void()> function);
+        static void doLater(std::function<void()> function);
 
         /**
          * @brief Creates a new synchronous task that will execute the given function at the start of the next frame
          * @param function Function to be executed
          * @param location Source location of the function call. This is used to make sure repeated calls to the function at the same location are only executed once
          */
-        static void doLaterOnce(std::move_only_function<void()> function, std::source_location location = std::source_location::current());
+        static void doLaterOnce(std::function<void()> function, std::source_location location = std::source_location::current());
 
         /**
          * @brief Creates a callback that will be executed when all tasks are finished
          * @param function Function to be executed
          */
-        static void runWhenTasksFinished(std::move_only_function<void()> function);
+        static void runWhenTasksFinished(std::function<void()> function);
 
         /**
          * @brief Sets the name of the current thread
@@ -192,7 +192,7 @@ namespace fene {
         static void runDeferredCalls();
 
     private:
-        static TaskHolder createTask(std::string name, u64 maxValue, bool background, std::move_only_function<void(Task &)> function);
+        static TaskHolder createTask(std::string name, u64 maxValue, bool background, std::function<void(Task &)> function);
     };
 
 }

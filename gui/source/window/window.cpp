@@ -108,7 +108,7 @@ namespace fene {
             m_windowOpen = false;
 
             if (!noQuestions)
-                EventWindowClosing::post(m_window);
+                EventWindowClosing::post(m_window, &m_windowOpen);
         });
 
         // Handle opening popups

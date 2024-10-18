@@ -68,7 +68,7 @@ namespace fene::log {
         template<typename T>
         auto format_as(const DebugFormattable<T> &formattable) {
             if constexpr (std::convertible_to<T, std::string>)
-                return fmt::format("{:?}", formattable.value);
+                return fmt::format("{:?}", static_cast<std::string>(formattable.value));
             else if constexpr (fmt::is_formattable<T>::value)
                 return fmt::format("{}", formattable.value);
             else if constexpr (std::is_enum_v<T>)
