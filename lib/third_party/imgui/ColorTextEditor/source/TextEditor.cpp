@@ -1163,6 +1163,15 @@ void TextEditor::Render(const char *aTitle, const ImVec2 &aSize, bool aBorder) {
         ImGui::BeginChild(aTitle, aSize, aBorder, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoMove);
 
     if (mHandleKeyboardInputs) {
+        if (ImGui::IsWindowFocused()) {
+            const auto cursorScreenPos = ImGui::GetCursorScreenPos();
+            auto& g = *ImGui::GetCurrentContext();
+            g.PlatformImeData.WantVisible = true;
+            g.PlatformImeData.InputPos = ImVec2(cursorScreenPos.x - 1.0f, cursorScreenPos.y - g.FontSize);
+            g.PlatformImeData.InputLineHeight = g.FontSize;
+            g.PlatformImeViewport = ImGui::GetCurrentWindowRead()->Viewport->ID;
+        }
+
         HandleKeyboardInputs();
         ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, false);
     }
