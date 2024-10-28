@@ -88,6 +88,7 @@ namespace fene::plugin::bundled {
                 );
             }
 
+        #if defined(IMGUI_LIBRARY_IMPLOT)
             {
                 const static ThemeManager::ColorMap ImPlotColorMap = {
                         { "line",               ImPlotCol_Line              },
@@ -122,7 +123,9 @@ namespace fene::plugin::bundled {
                                               }
                 );
             }
+        #endif
 
+        #if defined(IMGUI_LIBRARY_IMNODES)
             {
                 const static ThemeManager::ColorMap ImNodesColorMap = {
                         { "node-background",                    ImNodesCol_NodeBackground                   },
@@ -165,6 +168,7 @@ namespace fene::plugin::bundled {
                                               }
                 );
             }
+        #endif
 
             {
                 const static ThemeManager::ColorMap ImHexColorMap = {
@@ -213,6 +217,7 @@ namespace fene::plugin::bundled {
                 );
             }
 
+        #if defined(IMGUI_LIBRARY_COLOR_TEXT_EDITOR)
             {
                 const static ThemeManager::ColorMap TextEditorColorMap = {
                         { "default",                    u32(TextEditor::PaletteIndex::Default)                 },
@@ -252,6 +257,7 @@ namespace fene::plugin::bundled {
                     }
                 );
             }
+        #endif
         });
     }
 
@@ -293,6 +299,7 @@ namespace fene::plugin::bundled {
                 ThemeManager::addStyleHandler("imgui", ImGuiStyleMap);
             }
 
+        #if defined(IMGUI_LIBRARY_IMPLOT)
             {
                 auto &style = ImPlot::GetStyle();
                 const static ThemeManager::StyleMap ImPlotStyleMap = {
@@ -326,7 +333,9 @@ namespace fene::plugin::bundled {
 
                 ThemeManager::addStyleHandler("implot", ImPlotStyleMap);
             }
+        #endif
 
+        #if defined(IMGUI_LIBRARY_IMNODES)
             {
                 auto &style = ImNodes::GetStyle();
                 const static ThemeManager::StyleMap ImNodesStyleMap = {
@@ -349,6 +358,7 @@ namespace fene::plugin::bundled {
 
                 ThemeManager::addStyleHandler("imnodes", ImNodesStyleMap);
             }
+        #endif
 
             {
                 auto &style = ImGuiExt::GetCustomStyle();
