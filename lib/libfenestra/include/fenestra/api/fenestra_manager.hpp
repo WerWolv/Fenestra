@@ -296,6 +296,18 @@ namespace fene {
                 std::optional<u32> defaultSize;
             };
 
+            enum class SelectedFont {
+                BuiltinPixelPerfect,
+                BuiltinSmooth,
+                CustomFont,
+                SystemFont
+            };
+
+            struct CustomFont {
+                std::filesystem::path fontPath;
+                bool bold, italic, antiAliased;
+            };
+
             namespace impl {
 
                 const std::vector<Font>& getFonts();
@@ -307,6 +319,9 @@ namespace fene {
                 void setFonts(ImFont *bold, ImFont *italic);
 
                 void setLoadAllUnicodeCharacters(bool enabled);
+
+                void setCustomFont(const CustomFont &font);
+                void setSelectedFont(SelectedFont font);
             }
 
             GlyphRange glyph(const char *glyph);
@@ -321,18 +336,6 @@ namespace fene {
 
             ImFont* Bold();
             ImFont* Italic();
-
-            enum class SelectedFont {
-                BuiltinPixelPerfect,
-                BuiltinSmooth,
-                CustomFont,
-                SystemFont
-            };
-
-            struct CustomFont {
-                std::filesystem::path fontPath;
-                bool bold, italic, antiAliased;
-            };
 
             SelectedFont getSelectedFont();
 

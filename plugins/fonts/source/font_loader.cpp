@@ -83,6 +83,7 @@ namespace fene::fonts {
                 auto &storedFontData = m_fontData.emplace_back(fontData);
 
                 ImFontConfig config = m_config;
+                config.FontBuilderFlags &= ~(ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
                 config.FontDataOwnedByAtlas = false;
 
                 config.GlyphOffset = { offset.x, offset.y };
