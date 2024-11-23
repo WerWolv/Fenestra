@@ -638,8 +638,12 @@ function(createPackage)
 
             install(CODE [[ message(STATUS "MacOS Bundle finalized. DO NOT TOUCH IT ANYMORE! ANY MODIFICATIONS WILL BREAK IT FROM NOW ON!") ]])
         else()
+            foreach (plugin IN LISTS PLUGINS)
+                list(APPEND PLUGIN_TARGETS ${plugin}_plugin)
+            endforeach () 
+
             install(TARGETS main RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-            install(TARGETS ${PLUGINS} LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}/plugins)
+            install(TARGETS ${PLUGIN_TARGETS} LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}/plugins)
             install(TARGETS libfenestra LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR})
         endif()
     else()
