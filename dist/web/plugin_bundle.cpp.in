@@ -1,9 +1,9 @@
-extern "C" void forceLinkPlugin_@FENESTRA_PLUGIN_NAME@();
+extern "C" void forceLinkPlugin_@FENESTRA_PLUGIN_NAME_RAW@();
 
 namespace {
 struct StaticLoad {
     StaticLoad() {
-        forceLinkPlugin_@FENESTRA_PLUGIN_NAME@();
+        forceLinkPlugin_@FENESTRA_PLUGIN_NAME_RAW@();
     }
 };
 }

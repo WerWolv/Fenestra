@@ -1,6 +1,7 @@
 
 cmake-build-*/
 build/
+local/
 
 .idea/
 .cache/
