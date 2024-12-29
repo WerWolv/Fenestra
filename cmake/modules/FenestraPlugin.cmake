@@ -20,8 +20,8 @@ macro(add_fenestra_plugin)
 
         target_link_libraries(libfenestra PUBLIC ${FENESTRA_PLUGIN_NAME})
 
-        configure_file(${CMAKE_SOURCE_DIR}/dist/web/plugin_bundle.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/plugin-bundle.cpp @ONLY)
-        target_sources(main PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/plugin-bundle.cpp)
+        configure_file(${FENESTRA_BASE_FOLDER}/dist/web/plugin_bundle.cpp.in ${FENESTRA_MAIN_OUTPUT_DIRECTORY}/plugin-bundle.cpp @ONLY)
+        target_sources(main PUBLIC ${FENESTRA_MAIN_OUTPUT_DIRECTORY}/plugin-bundle.cpp)
         set(FENESTRA_PLUGIN_SUFFIX ".feneplugin")
     else()
         if (FENESTRA_PLUGIN_LIBRARY_PLUGIN)
